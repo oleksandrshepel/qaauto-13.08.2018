@@ -1,19 +1,106 @@
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 public class LinkedinLoginTest {
+    private WebDriver driver;
+    private WebDriverWait wait;
+    private String mainURL;
 
-    @Test
-    public void successfulLoginTest(){
+    @BeforeMethod
+    public void beforeMethod(){
+        driver = new ChromeDriver();
+        wait = new WebDriverWait(driver, 10);
+        mainURL = "https://www.linkedin.com/";
+        driver.get(mainURL);
+    }
+
+    @AfterMethod
+    public void afterMethod(){
+        driver.quit();
+    }
+
+    @DataProvider
+    public Object[][] validDataProvider() {
+        return new Object[][]{
+                { "limp_slim@ukr.net", "COPYC2t" },
+                { "LIMP_slim@ukr.net", "COPYC2t" },
+                { "  limp_slim@ukr.net  ", "COPYC2t" }
+        };
+    }
+
+    @DataProvider
+    public Object[][] wrongEmailAndPasswordDataProvider() {
+        return new Object[][]{
+                { "Txx@xt.net", "Wrong1234", "There were one or more errors in your submission. Please correct the marked fields below.",
+                        "Hmm, we don't recognize that email. Please try again."},
+                { "COPYC2t", "limp_slim@ukr.net", "There were one or more errors in your submission. Please correct the marked fields below.",
+                "Please enter a valid email address."}
+        };
+    }
+
+    @DataProvider
+    public Object[][] correctEmailAndWrongPasswordDataProvider() {
+        return new Object[][]{
+                { "limp_slim@ukr.net", "Wrong12345", "There were one or more errors in your submission. Please correct the marked fields below.",
+                        "Hmm, that's not the right password. Please try again or request a new one."},
+                { "limp_slim@ukr.net", "123", "There were one or more errors in your submission. Please correct the marked fields below.",
+                "The password you provided must have at least 6 characters."},
+                { "limp_slim@ukr.net",
+                        "Maintaining a well-tested codebase is mission-critical, but figuring out where your tests are lacking can be painful. You're already running your tests on a continuous integration server, let it do the heavy lifting. Coveralls works with your CI to sift through coverage data to find gaps you didn't know you hadtuyewqtruwieuiri734y687368574yrfudsfgdjhfdisaufhyirwe47y857346t87eryfgdsadhfuisaugferu7y8t7e",
+                        "There were one or more errors in your submission. Please correct the marked fields below.",
+                        "The password you provided must have at most 400 characters."}
+        };
+    }
+
+    @DataProvider
+    public Object[][] wrongEmailAndCorrectPasswordDataProvider() {
+        return new Object[][]{
+                { "TTx@xtx.net", "COPYC2t", "There were one or more errors in your submission. Please correct the marked fields below.",
+                        "Hmm, we don't recognize that email. Please try again."},
+                { "12 ^#%$^&%^&^%&*&*(*&* ^5876098765", "COPYC2t",
+                        "There were one or more errors in your submission. Please correct the marked fields below.",
+                        "Be sure to include \"+\" and your country code."},
+                { "limp_slimukr.net", "COPYC2t", "There were one or more errors in your submission. Please correct the marked fields below.",
+                        "Please enter a valid email address."},
+                { "Maintaining a well-tested codebase is mission-critical, but figuring out where your tests are lacking can be painful. You're already running your tests on a continuous integration server, let it do the heavy lifting. Coveralls works with your CI to sift through coverage data to find gaps you didn't know you had",
+                        "COPYC2t", "There were one or more errors in your submission. Please correct the marked fields below.",
+                        "The text you provided is too long (the maximum length is 128 characters, your text contains 312 characters)."},
+                { "r", "COPYC2t", "There were one or more errors in your submission. Please correct the marked fields below.",
+                        "The text you provided is too short (the minimum length is 3 characters, your text contains 1 character)."}
+        };
+    }
+
+    @DataProvider
+    public Object[][] emptyLoginAndOrPasswordDataProvider(){
+        return new Object[][]{
+                { "", ""},
+                { "", "COPYC2t"},
+                { "limp_slim@ukr.net", ""}
+        };
+    }
+
+    @DataProvider
+    public Object[][] injectionInsteadLogin (){
+        return new Object[][]{
+                { "<script>alert(123)</script>", "COPYC2t", "There were one or more errors in your submission. Please correct the marked fields below.",
+                        "Please enter a valid email address."},
+                { "<form action=\"http://google.com\"><input type=»submit»></form>", "COPYC2t", "There were one or more errors in your submission. Please correct the marked fields below.",
+                        "Please enter a valid email address."},
+                { "SELECT * FROM blog WHERE code LIKE 'a%'", "COPYC2t", "There were one or more errors in your submission. Please correct the marked fields below.",
+                        "Please enter a valid email address."},
+        };
+    }
+
+
+
+    @Test(dataProvider = "validDataProvider")
+    public void successfulLoginTest(String userEmail, String userPassword){
         //Navigate to 'Linkedin.com'
         //Verify that login page is loaded
         //Enter user e-mail
@@ -21,473 +108,63 @@ public class LinkedinLoginTest {
         //Click 'Sign in' button
         //Verify Home page is loaded
 
-        WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        String mainURL = "https://www.linkedin.com/";
-        String landingPageTitle = "LinkedIn: Log In or Sign Up";
-        String custLogin = "limp_slim@ukr.net";
-        String custPassword = "COPYC2t";
+        LinkedinLoginPage linkedinLoginPage = new LinkedinLoginPage(driver);
+        Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "The Login page is not loaded");
+        linkedinLoginPage.login(userEmail, userPassword);
 
-        driver.get(mainURL);
-        Assert.assertEquals(driver.getCurrentUrl(), mainURL, "Login page URL doesn't not match");
-        Assert.assertEquals(driver.getTitle(), landingPageTitle,
-                "Login page Title doesn't not match");
-
-        WebElement loginField = wait.until(ExpectedConditions.elementToBeClickable(By.id("login-email")));
-        loginField.click();
-        loginField.sendKeys(custLogin);
-
-        WebElement loginPasswordField = driver.findElement(By.id("login-password"));
-        loginPasswordField.click();
-        loginPasswordField.sendKeys(custPassword);
-
-        WebElement signInButton = driver.findElement(By.id("login-submit"));
-        Assert.assertTrue(signInButton.isDisplayed(),
-                "SignIn button is not displayed on Login Page");
-        signInButton.click();
-
-        List<WebElement> navList = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath("//nav[@id='extended-nav']/*/ul[1]/li")));
-        List<String> navListPattern = new ArrayList<String>() {};
-        navListPattern.add("Главная");
-        navListPattern.add("Сеть");
-        navListPattern.add("Вакансии");
-        navListPattern.add("Сообщения");
-        navListPattern.add("Уведомления");
-        navListPattern.add("Профиль");
-
-        List<String> navListText = new ArrayList<String>() {};
-        for (WebElement navListItem : navList)
-            navListText.add(navListItem.getText());
-
-        Collections.sort(navListText);
-        Collections.sort(navListPattern);
-
-        Assert.assertEquals(navListText, navListPattern,
-                "Prifile webElements doesn't match");
-
-        WebElement profileNavItem = driver.findElement(By.xpath("//li[@id='profile-nav-item']"));
-        Assert.assertTrue(profileNavItem.isDisplayed(),
-                "profileNavItem button is not displayed on Home page");
-
-        driver.close();
+        LinkedinHomePage linkedinHomePage = new LinkedinHomePage(driver);
+        Assert.assertTrue(linkedinHomePage.isPageLoaded(), "The Home page is not loaded");
     }
 
-    @Test
-    public void negativeWrongEmailAndPasswordLoginTest(){
-        WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        String mainURL = "https://www.linkedin.com/";
-        String landingPageTitle = "LinkedIn: Log In or Sign Up";
-        String custLogin = "xxx@x.net";
-        String custPassword = "Wrong123";
-
-
-        driver.get(mainURL);
-        Assert.assertEquals(driver. getCurrentUrl(), mainURL, "Login page URL doesn't not match");
-        Assert.assertEquals(driver.getTitle(), landingPageTitle,
-                "Login page Title doesn't not match");
-
-        WebElement loginField = wait.until(ExpectedConditions.elementToBeClickable(By.id("login-email")));
-        loginField.click();
-        loginField.sendKeys(custLogin);
-
-        WebElement loginPasswordField = driver.findElement(By.id("login-password"));
-        loginPasswordField.click();
-        loginPasswordField.sendKeys(custPassword);
-
-        WebElement signInButton = driver.findElement(By.id("login-submit"));
-        Assert.assertTrue(signInButton.isDisplayed(),
-                "SignIn button is not displayed on Login Page");
-        signInButton.click();
-
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        WebElement alertMessage = driver.findElement(By.xpath("//div[@id='global-alert-queue']"));
-        Assert.assertEquals(alertMessage.getText(),
-                "There were one or more errors in your submission. Please correct the marked fields below.",
-                "Alert message doesn't match");
-
-        driver.close();
-
+    @Test(dataProvider = "wrongEmailAndPasswordDataProvider")
+    public void negativeWrongEmailAndPasswordLoginTest(String userEmail, String userPassword, String alertMessage, String alertMessageEmail){
+        LinkedinLoginPage linkedinLoginPage = new LinkedinLoginPage(driver);
+        Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
+        linkedinLoginPage.login(userEmail, userPassword);
+        LinkedinLoginSubmitPage linkedinLoginSubmitPage = new LinkedinLoginSubmitPage(driver);
+        Assert.assertTrue(linkedinLoginSubmitPage.isPageLoaded(), "LoginSubmit page is not loaded");
+        Assert.assertTrue(linkedinLoginSubmitPage.isAlertMessageDisplayed(alertMessage), "Alert message text is wrong or is not displayed");
+        Assert.assertTrue(linkedinLoginSubmitPage.isAlertMessageEmailDisplayed(alertMessageEmail), "Alert message Email is wrong or is not displayed");
     }
 
-    @Test
-    public void negativeCorrectLoginAndWrongPasswordLoginTest(){
-        WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        String mainURL = "https://www.linkedin.com/";
-        String landingPageTitle = "LinkedIn: Log In or Sign Up";
-        String custLogin = "limp_slim@ukr.net";
-        String custPassword = "Wrong123";
-
-
-        driver.get(mainURL);
-        Assert.assertEquals(driver. getCurrentUrl(), mainURL, "Login page URL doesn't not match");
-        Assert.assertEquals(driver.getTitle(), landingPageTitle,
-                "Login page Title doesn't not match");
-
-        WebElement loginField = wait.until(ExpectedConditions.elementToBeClickable(By.id("login-email")));
-        loginField.click();
-        loginField.sendKeys(custLogin);
-
-        WebElement loginPasswordField = driver.findElement(By.id("login-password"));
-        loginPasswordField.click();
-        loginPasswordField.sendKeys(custPassword);
-
-        WebElement signInButton = driver.findElement(By.id("login-submit"));
-        Assert.assertTrue(signInButton.isDisplayed(),
-                "SignIn button is not displayed on Login Page");
-        signInButton.click();
-
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-
-        WebElement alertMessage = driver.findElement(By.xpath("//div[@id='global-alert-queue']"));
-        Assert.assertEquals(alertMessage.getText(),
-                "There were one or more errors in your submission. Please correct the marked fields below.",
-                "Alert message doesn't match");
-        WebElement passwordLoginError = driver.findElement(By.xpath("//span[@id='session_password-login-error']"));
-        Assert.assertEquals(passwordLoginError.getText(), "Hmm, that's not the right password. Please try again or request a new one.",
-                "Alert message doesn't match");
-
-        driver.close();
-
+    @Test(dataProvider = "correctEmailAndWrongPasswordDataProvider")
+    public void negativeCorrectLoginAndWrongPasswordLoginTest(String userEmail, String userPassword, String alertMessage, String alertMessagePassword){
+        LinkedinLoginPage linkedinLoginPage = new LinkedinLoginPage(driver);
+        Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
+        linkedinLoginPage.login(userEmail, userPassword);
+        LinkedinLoginSubmitPage linkedinLoginSubmitPage = new LinkedinLoginSubmitPage(driver);
+        Assert.assertTrue(linkedinLoginSubmitPage.isPageLoaded(), "LoginSubmit page is not loaded");
+        Assert.assertTrue(linkedinLoginSubmitPage.isAlertMessageDisplayed(alertMessage), "Alert message text is wrong or is not displayed");
+        Assert.assertTrue(linkedinLoginSubmitPage.isAlertMessagePasswordDisplayed(alertMessagePassword), "Alert message Password is wrong or is not displayed");
     }
 
-    @Test
-    public void negativeIncorrectLoginAndCorrectPasswordLoginTest(){
-        WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        String mainURL = "https://www.linkedin.com/";
-        String landingPageTitle = "LinkedIn: Log In or Sign Up";
-        String custLogin = "limpslim@ukr.net";
-        String custPassword = "COPYC2t";
-
-
-        driver.get(mainURL);
-        Assert.assertEquals(driver. getCurrentUrl(), mainURL, "Login page URL doesn't not match");
-        Assert.assertEquals(driver.getTitle(), landingPageTitle,
-                "Login page Title doesn't not match");
-
-        WebElement loginField = wait.until(ExpectedConditions.elementToBeClickable(By.id("login-email")));
-        loginField.click();
-        loginField.sendKeys(custLogin);
-
-        WebElement loginPasswordField = driver.findElement(By.id("login-password"));
-        loginPasswordField.click();
-        loginPasswordField.sendKeys(custPassword);
-
-        WebElement signInButton = driver.findElement(By.id("login-submit"));
-        Assert.assertTrue(signInButton.isDisplayed(),
-                "SignIn button is not displayed on Login Page");
-        signInButton.click();
-
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        WebElement alertMessage = driver.findElement(By.xpath("//div[@id='global-alert-queue']"));
-        Assert.assertEquals(alertMessage.getText(),
-                "There were one or more errors in your submission. Please correct the marked fields below.",
-                "Alert message doesn't match");
-        WebElement loginLoginError = driver.findElement(By.xpath("//span[@id='session_key-login-error']"));
-        Assert.assertEquals(loginLoginError.getText(), "Hmm, we don't recognize that email. Please try again.",
-                "Alert message doesn't match");
-
-        driver.close();
-
+    @Test (dataProvider = "wrongEmailAndCorrectPasswordDataProvider")
+    public void negativeIncorrectLoginAndCorrectPasswordLoginTest(String userEmail, String userPassword, String alertMessage, String alertMessageEmail){
+        LinkedinLoginPage linkedinLoginPage = new LinkedinLoginPage(driver);
+        Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
+        linkedinLoginPage.login(userEmail, userPassword);
+        LinkedinLoginSubmitPage linkedinLoginSubmitPage = new LinkedinLoginSubmitPage(driver);
+        Assert.assertTrue(linkedinLoginSubmitPage.isPageLoaded(), "LoginSubmit page is not loaded");
+        Assert.assertTrue(linkedinLoginSubmitPage.isAlertMessageDisplayed(alertMessage), "Alert message text is wrong or is not displayed");
+        Assert.assertTrue(linkedinLoginSubmitPage.isAlertMessageEmailDisplayed(alertMessageEmail), "Alert message Email is wrong or is not displayed");
     }
 
-    @Test
-    public void negativeInterchangeLoginAndPasswordLoginTest(){
-        WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        String mainURL = "https://www.linkedin.com/";
-        String landingPageTitle = "LinkedIn: Log In or Sign Up";
-        String custLogin = "COPYC2t";
-        String custPassword = "limp_slim@ukr.net";
-
-
-        driver.get(mainURL);
-        Assert.assertEquals(driver. getCurrentUrl(), mainURL, "Login page URL doesn't not match");
-        Assert.assertEquals(driver.getTitle(), landingPageTitle,
-                "Login page Title doesn't not match");
-
-        WebElement loginField = wait.until(ExpectedConditions.elementToBeClickable(By.id("login-email")));
-        loginField.click();
-        loginField.sendKeys(custLogin);
-
-        WebElement loginPasswordField = driver.findElement(By.id("login-password"));
-        loginPasswordField.click();
-        loginPasswordField.sendKeys(custPassword);
-
-        WebElement signInButton = driver.findElement(By.id("login-submit"));
-        Assert.assertTrue(signInButton.isDisplayed(),
-                "SignIn button is not displayed on Login Page");
-        signInButton.click();
-
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        WebElement alertMessage = driver.findElement(By.xpath("//div[@id='global-alert-queue']"));
-        Assert.assertEquals(alertMessage.getText(),
-                "There were one or more errors in your submission. Please correct the marked fields below.",
-                "Alert message doesn't match");
-        WebElement keyLoginError = driver.findElement(By.xpath("//span[@id='session_key-login-error']"));
-        Assert.assertEquals(keyLoginError.getText(),
-                "Please enter a valid email address.",
-                "Alert message doesn't match");
-
-        driver.close();
-
+    @Test(dataProvider = "emptyLoginAndOrPasswordDataProvider")
+    public void negativeEmptyLoginAndOrPasswordLoginTest(String userEmail, String userPassword){
+        LinkedinLoginPage linkedinLoginPage = new LinkedinLoginPage(driver);
+        Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
+        linkedinLoginPage.login(userEmail, userPassword);
+        Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Incorrect page is displayed");
     }
 
-    @Test
-    public void negativeEmptyLoginAndPasswordLoginTest(){
-        WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        String mainURL = "https://www.linkedin.com/";
-        String landingPageTitle = "LinkedIn: Log In or Sign Up";
-        String custLogin = "";
-        String custPassword = "";
-
-
-        driver.get(mainURL);
-        Assert.assertEquals(driver. getCurrentUrl(), mainURL, "Login page URL doesn't not match");
-        Assert.assertEquals(driver.getTitle(), landingPageTitle,
-                "Login page Title doesn't not match");
-
-        WebElement loginField = wait.until(ExpectedConditions.elementToBeClickable(By.id("login-email")));
-        loginField.click();
-        loginField.sendKeys(custLogin);
-
-        WebElement loginPasswordField = driver.findElement(By.id("login-password"));
-        loginPasswordField.click();
-        loginPasswordField.sendKeys(custPassword);
-
-        WebElement signInButton = driver.findElement(By.id("login-submit"));
-        Assert.assertTrue(signInButton.isDisplayed(),
-                "SignIn button is not displayed on Login Page");
-        signInButton.click();
-
-        Assert.assertEquals(driver.getCurrentUrl(), mainURL, "Login page URL doesn't not match");
-        Assert.assertEquals(driver.getTitle(), landingPageTitle,
-                "Login page Title doesn't not match");
-
-        driver.close();
-
+    @Test(dataProvider = "injectionInsteadLogin")
+    public void negativeJS_HTML_SQLInjectionsInsteadLoginLoginTest(String userEmail, String userPassword, String alertMessage, String alertMessageEmail){
+        LinkedinLoginPage linkedinLoginPage = new LinkedinLoginPage(driver);
+        Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
+        linkedinLoginPage.login(userEmail, userPassword);
+        LinkedinLoginSubmitPage linkedinLoginSubmitPage = new LinkedinLoginSubmitPage(driver);
+        Assert.assertTrue(linkedinLoginSubmitPage.isPageLoaded(), "LoginSubmit page is not loaded");
+        Assert.assertTrue(linkedinLoginSubmitPage.isAlertMessageDisplayed(alertMessage), "Alert message text is wrong or is not displayed");
+        Assert.assertTrue(linkedinLoginSubmitPage.isAlertMessageEmailDisplayed(alertMessageEmail), "Alert message Email is wrong or is not displayed");
     }
-
-    @Test
-    public void negativeEmptyLoginAndCorrectPasswordLoginTest(){
-        WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        String mainURL = "https://www.linkedin.com/";
-        String landingPageTitle = "LinkedIn: Log In or Sign Up";
-        String custLogin = "";
-        String custPassword = "COPYC2t";
-
-
-        driver.get(mainURL);
-        Assert.assertEquals(driver. getCurrentUrl(), mainURL, "Login page URL doesn't not match");
-        Assert.assertEquals(driver.getTitle(), landingPageTitle,
-                "Login page Title doesn't not match");
-
-        WebElement loginField = wait.until(ExpectedConditions.elementToBeClickable(By.id("login-email")));
-        loginField.click();
-        loginField.sendKeys(custLogin);
-
-        WebElement loginPasswordField = driver.findElement(By.id("login-password"));
-        loginPasswordField.click();
-        loginPasswordField.sendKeys(custPassword);
-
-        WebElement signInButton = driver.findElement(By.id("login-submit"));
-        Assert.assertTrue(signInButton.isDisplayed(),
-                "SignIn button is not displayed on Login Page");
-        signInButton.click();
-
-        Assert.assertEquals(driver.getCurrentUrl(), mainURL, "Login page URL doesn't not match");
-        Assert.assertEquals(driver.getTitle(), landingPageTitle,
-                "Login page Title doesn't not match");
-
-        driver.close();
-
-    }
-
-    @Test
-    public void negativeCorrectLoginAndEmptyPasswordLoginTest(){
-        WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        String mainURL = "https://www.linkedin.com/";
-        String landingPageTitle = "LinkedIn: Log In or Sign Up";
-        String custLogin = "limp_slim@ukr.net";
-        String custPassword = "";
-
-
-        driver.get(mainURL);
-        Assert.assertEquals(driver. getCurrentUrl(), mainURL, "Login page URL doesn't not match");
-        Assert.assertEquals(driver.getTitle(), landingPageTitle,
-                "Login page Title doesn't not match");
-
-        WebElement loginField = wait.until(ExpectedConditions.elementToBeClickable(By.id("login-email")));
-        loginField.click();
-        loginField.sendKeys(custLogin);
-
-        WebElement loginPasswordField = driver.findElement(By.id("login-password"));
-        loginPasswordField.click();
-        loginPasswordField.sendKeys(custPassword);
-
-        WebElement signInButton = driver.findElement(By.id("login-submit"));
-        Assert.assertTrue(signInButton.isDisplayed(),
-                "SignIn button is not displayed on Login Page");
-        signInButton.click();
-
-        Assert.assertEquals(driver.getCurrentUrl(), mainURL, "Login page URL doesn't not match");
-        Assert.assertEquals(driver.getTitle(), landingPageTitle,
-                "Login page Title doesn't not match");
-
-        driver.close();
-
-    }
-
-    @Test
-    public void negativeJSInjectionInsteadLoginLoginTest(){
-        WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        String mainURL = "https://www.linkedin.com/";
-        String landingPageTitle = "LinkedIn: Log In or Sign Up";
-        String custLogin = "<script>alert(123)</script>";
-        String custPassword = "COPYC2t";
-
-
-        driver.get(mainURL);
-        Assert.assertEquals(driver. getCurrentUrl(), mainURL, "Login page URL doesn't not match");
-        Assert.assertEquals(driver.getTitle(), landingPageTitle,
-                "Login page Title doesn't not match");
-
-        WebElement loginField = wait.until(ExpectedConditions.elementToBeClickable(By.id("login-email")));
-        loginField.click();
-        loginField.sendKeys(custLogin);
-
-        WebElement loginPasswordField = driver.findElement(By.id("login-password"));
-        loginPasswordField.click();
-        loginPasswordField.sendKeys(custPassword);
-
-        WebElement signInButton = driver.findElement(By.id("login-submit"));
-        Assert.assertTrue(signInButton.isDisplayed(),
-                "SignIn button is not displayed on Login Page");
-        signInButton.click();
-
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        WebElement alertMessage = driver.findElement(By.xpath("//div[@id='global-alert-queue']"));
-        Assert.assertEquals(alertMessage.getText(),
-                "There were one or more errors in your submission. Please correct the marked fields below.",
-                "Alert message doesn't match");
-        WebElement keyLoginError = driver.findElement(By.xpath("//span[@id='session_key-login-error']"));
-        Assert.assertEquals(keyLoginError.getText(),
-                "Please enter a valid email address.",
-                "Alert message doesn't match");
-
-        driver.close();
-    }
-
-    @Test
-    public void negativeHTMLInjectionInsteadLoginLoginTest(){
-        WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        String mainURL = "https://www.linkedin.com/";
-        String landingPageTitle = "LinkedIn: Log In or Sign Up";
-        String custLogin = "<form action=\"https://google.com/\"><input type=\"submit\"></form>";
-        String custPassword = "COPYC2t";
-
-
-        driver.get(mainURL);
-        Assert.assertEquals(driver. getCurrentUrl(), mainURL, "Login page URL doesn't not match");
-        Assert.assertEquals(driver.getTitle(), landingPageTitle,
-                "Login page Title doesn't not match");
-
-        WebElement loginField = wait.until(ExpectedConditions.elementToBeClickable(By.id("login-email")));
-        loginField.click();
-        loginField.sendKeys(custLogin);
-
-        WebElement loginPasswordField = driver.findElement(By.id("login-password"));
-        loginPasswordField.click();
-        loginPasswordField.sendKeys(custPassword);
-
-        WebElement signInButton = driver.findElement(By.id("login-submit"));
-        Assert.assertTrue(signInButton.isDisplayed(),
-                "SignIn button is not displayed on Login Page");
-        signInButton.click();
-
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        WebElement alertMessage = driver.findElement(By.xpath("//div[@id='global-alert-queue']"));
-        Assert.assertEquals(alertMessage.getText(),
-                "There were one or more errors in your submission. Please correct the marked fields below.",
-                "Alert message doesn't match");
-        WebElement keyLoginError = driver.findElement(By.xpath("//span[@id='session_key-login-error']"));
-        Assert.assertEquals(keyLoginError.getText(),
-                "Please enter a valid email address.",
-                "Alert message doesn't match");
-
-        driver.close();
-    }
-
-    @Test
-    public void negativeLoginWithSpaceAndCorrectPasswordLoginTest(){
-        WebDriver driver = new ChromeDriver();
-        WebDriverWait wait = new WebDriverWait(driver, 10);
-        String mainURL = "https://www.linkedin.com/";
-        String landingPageTitle = "LinkedIn: Log In or Sign Up";
-        String custLogin = "  limp_slim@ukr.net";
-        String custPassword = "COPYC2t";
-
-
-        driver.get(mainURL);
-        Assert.assertEquals(driver. getCurrentUrl(), mainURL, "Login page URL doesn't not match");
-        Assert.assertEquals(driver.getTitle(), landingPageTitle,
-                "Login page Title doesn't not match");
-
-        WebElement loginField = wait.until(ExpectedConditions.elementToBeClickable(By.id("login-email")));
-        loginField.click();
-        loginField.sendKeys(custLogin);
-
-        WebElement loginPasswordField = driver.findElement(By.id("login-password"));
-        loginPasswordField.click();
-        loginPasswordField.sendKeys(custPassword);
-
-        WebElement signInButton = driver.findElement(By.id("login-submit"));
-        Assert.assertTrue(signInButton.isDisplayed(),
-                "SignIn button is not displayed on Login Page");
-        signInButton.click();
-
-        WebElement profileNavItem = driver.findElement(By.xpath("//li[@id='profile-nav-item']"));
-        Assert.assertTrue(profileNavItem.isDisplayed(),
-                "profileNavItem button is not displayed on Home page");
-
-        driver.close();
-    }
-
 }
