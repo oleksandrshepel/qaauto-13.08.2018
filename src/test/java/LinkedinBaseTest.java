@@ -8,10 +8,13 @@ import java.util.concurrent.TimeUnit;
 public class LinkedinBaseTest {
     protected WebDriver driver;
     protected WebDriverWait wait;
-    private String mainURL;
     protected LinkedinLoginPage linkedinLoginPage;
     protected LinkedinHomePage linkedinHomePage;
     protected LinkedinLoginSubmitPage linkedinLoginSubmitPage;
+    protected LinkedinSearchPage linkedinSearchPage;
+
+    private String mainURL;
+
 
     @BeforeMethod
     public void beforeMethod(){
