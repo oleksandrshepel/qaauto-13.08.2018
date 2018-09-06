@@ -40,6 +40,6 @@ public class BadCodeExample {
 
 
         driver.close();
-        //driver.quit();
+        driver.quit();
     }
 }

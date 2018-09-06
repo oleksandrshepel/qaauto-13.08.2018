@@ -3,9 +3,8 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class LinkedinLoginSubmitPage {
-    private WebDriver driver;
-    String loginSubmitPageUrl = "https://www.linkedin.com/uas/login-submit";
+public class LinkedinLoginSubmitPage extends LinkedinBasePage{
+    private String loginSubmitPageUrl = "https://www.linkedin.com/uas/login-submit";
 
     @FindBy (xpath = "//a[@title='Join now']")
     private WebElement buttonJoinNow;
@@ -25,36 +24,39 @@ public class LinkedinLoginSubmitPage {
 
     }
 
-    public String getCurrentUrl(){
-
-        return driver.getCurrentUrl();
-    }
-
-    public String getCurrentTitle(){
-        return  driver.getTitle();
-    }
-
     public boolean isPageLoaded(){
         return getCurrentUrl().equals(loginSubmitPageUrl)
                 && getCurrentTitle().equals("Sign In to LinkedIn")
                 && buttonJoinNow.isDisplayed();
     }
 
-    public boolean isAlertMessageDisplayed(String alertMessage){
+    public String getAlertMessageText(){
+        return globalAlertMessage.getText();
+    }
+
+    public String getUserEmailAlertText(){
+        return alertMessageLogin.getText();
+    }
+
+    public String getUserPasswordAlertText(){
+        return alertMessagePassword.getText();
+    }
+
+    /*public boolean isAlertMessageDisplayed(String alertMessage){
         return getCurrentUrl().equals("https://www.linkedin.com/uas/login-submit")
                 && getCurrentTitle().equals("Sign In to LinkedIn")
                 && globalAlertMessage.getText().equals(alertMessage);
-    }
+    }*/
 
-    public boolean isAlertMessageEmailDisplayed(String alertMessage){
+    /*public boolean isAlertMessageEmailDisplayed(String alertMessage){
         return getCurrentUrl().equals("https://www.linkedin.com/uas/login-submit")
                 && getCurrentTitle().equals("Sign In to LinkedIn")
                 && alertMessageLogin.getText().equals(alertMessage);
-    }
-    public boolean isAlertMessagePasswordDisplayed(String alertMessage){
+    }*/
+    /*public boolean isAlertMessagePasswordDisplayed(String alertMessage){
         return getCurrentUrl().equals("https://www.linkedin.com/uas/login-submit")
                 && getCurrentTitle().equals("Sign In to LinkedIn")
                 && alertMessagePassword.getText().equals(alertMessage);
-    }
+    }*/
 
 }

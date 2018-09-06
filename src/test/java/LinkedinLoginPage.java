@@ -5,8 +5,7 @@ import org.openqa.selenium.support.PageFactory;
 
 import static java.lang.Thread.sleep;
 
-public class LinkedinLoginPage {
-    private WebDriver driver;
+public class LinkedinLoginPage extends LinkedinBasePage {
     private String landingPageTitle = "LinkedIn: Log In or Sign Up";
     private String mainURL = "https://www.linkedin.com/";
 
@@ -34,23 +33,16 @@ public class LinkedinLoginPage {
             e.printStackTrace();
         }
         if (getCurrentUrl().contains("/feed")) {
-            return (T) new LinkedinHomePage(driver);
+            return (T) new LinkedinHomePage(driver, wait);
         }
         if (getCurrentUrl().contains("/login-submit")) {
             return (T) new LinkedinLoginSubmitPage(driver);
         }
         else {
-            return (T) this; //или Т()this;
+            return (T) this; // или Т()this;
                             // или(T)PageFactory.initElements(driver, LinkedinLoginPage.class); - эта реализация вернет new LinkedinLoginPage() с проинициализированными полями веб елементов
+                           // даную конструкцию следует использовать, если в конструкции возвращаемой пейджи мы не прописываем PageFactory.initElements(driver, this)
         }
-    }
-
-    public String getCurrentUrl(){
-        return driver.getCurrentUrl();
-    }
-
-    public String getCurrentTitle(){
-        return driver.getTitle();
     }
 
     public boolean isPageLoaded(){
