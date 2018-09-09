@@ -1,6 +1,4 @@
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -15,6 +13,12 @@ public class LinkedinHomePage extends LinkedinBasePage {
 
     @FindBy(xpath = "//input[@placeholder and @role='combobox']")
     private WebElement searchField;
+
+    @FindBy (xpath="//button[@id='nav-settings__dropdown-trigger']")
+    private WebElement profileNavButton;
+
+    //@FindBy (xpath="//a[@data-control-name='nav.settings_account_manage_account']")
+    //private WebElement settingsAndPrivacyLink;
 
     public LinkedinHomePage(WebDriver driver, WebDriverWait wait){
         this.driver = driver;
@@ -41,5 +45,32 @@ public class LinkedinHomePage extends LinkedinBasePage {
             e.printStackTrace();
         }
         return new LinkedinSearchPage(driver);
+    }
+
+    public void clickProfileNavButton(){
+        profileNavButton.click();
+    }
+
+    public <T> T selectProfileNavDropdownItem(String itemName){
+        WebElement dropdownItem = driver.findElement(
+                By.xpath("//ul[@id='nav-settings__dropdown-options']/descendant:: a[contains(.,'"+itemName+"')]"));
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", dropdownItem);
+        dropdownItem.click();
+        try {
+            sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if (getCurrentUrl().contains("/psettings"))
+            return (T) new LinkedinProfileSettingsPage(driver, wait);
+        if (getCurrentUrl().contains("/help"))
+            return (T) new LinkedinHelpPage(driver);
+        if (getCurrentUrl().contains("/recent-activity"))
+            return (T) new LinkedinActivityPage(driver);
+        if (getCurrentUrl().contains("/mjobs/jobPosting"))
+            return (T) new LinkedinJobsPage(driver);
+        if(getCurrentUrl().contains("/m/logout"))
+            return (T) new LinkedinLogoutPage(driver);
+        else return (T) this;
     }
 }

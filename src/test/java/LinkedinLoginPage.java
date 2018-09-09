@@ -18,6 +18,9 @@ public class LinkedinLoginPage extends LinkedinBasePage {
     @FindBy(xpath = "//input[@id='login-submit']")
     private WebElement signInButton;
 
+    @FindBy(xpath = "//a[@class='link-forgot-password']")
+    private WebElement forgotPasswordLink;
+
     public LinkedinLoginPage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this); //Можем вычитать из другого класса тогда вместо this ставим LinkedinHomePage.class
@@ -43,6 +46,18 @@ public class LinkedinLoginPage extends LinkedinBasePage {
                             // или(T)PageFactory.initElements(driver, LinkedinLoginPage.class); - эта реализация вернет new LinkedinLoginPage() с проинициализированными полями веб елементов
                            // даную конструкцию следует использовать, если в конструкции возвращаемой пейджи мы не прописываем PageFactory.initElements(driver, this)
         }
+    }
+
+    public <T> T clickForgotPasswordLink(){
+        forgotPasswordLink.click();
+        try {
+            sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        if(getCurrentUrl().contains("/uas/request-password-reset"))
+            return (T) new LinkedinPasswordResetPage(driver);
+        else return (T) this;
     }
 
     public boolean isPageLoaded(){

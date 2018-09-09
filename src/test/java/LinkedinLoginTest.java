@@ -7,9 +7,9 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
     @DataProvider
     public Object[][] validDataProvider() {
         return new Object[][]{
-                { "limp_slim@ukr.net", "COPYC2t" },
-                { "LIMP_slim@ukr.net", "COPYC2t" },
-                { "  limp_slim@ukr.net  ", "COPYC2t" }
+                { "limp_slim@ukr.net", "COPYC@2t" },
+                { "LIMP_slim@ukr.net", "COPYC@2t" },
+                { "  limp_slim@ukr.net  ", "COPYC@2t" }
         };
     }
 
@@ -18,7 +18,7 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
         return new Object[][]{
                 { "Txx@xt.net", "Wrong1234", "There were one or more errors in your submission. Please correct the marked fields below.",
                         "Hmm, we don't recognize that email. Please try again."},
-                { "COPYC2t", "limp_slim@ukr.net", "There were one or more errors in your submission. Please correct the marked fields below.",
+                { "COPYC@2t", "limp_slim@ukr.net", "There were one or more errors in your submission. Please correct the marked fields below.",
                 "Please enter a valid email address."}
         };
     }
@@ -40,17 +40,17 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
     @DataProvider
     public Object[][] wrongEmailAndCorrectPasswordDataProvider() {
         return new Object[][]{
-                { "TTx@xtx.net", "COPYC2t", "There were one or more errors in your submission. Please correct the marked fields below.",
+                { "TTx@xtx.net", "COPYC@2t", "There were one or more errors in your submission. Please correct the marked fields below.",
                         "Hmm, we don't recognize that email. Please try again."},
                 { "12 ^#%$^&%^&^%&*&*(*&* ^5876098765", "COPYC2t",
                         "There were one or more errors in your submission. Please correct the marked fields below.",
                         "Be sure to include \"+\" and your country code."},
-                { "limp_slimukr.net", "COPYC2t", "There were one or more errors in your submission. Please correct the marked fields below.",
+                { "limp_slimukr.net", "COPYC@2t", "There were one or more errors in your submission. Please correct the marked fields below.",
                         "Please enter a valid email address."},
                 { "Maintaining a well-tested codebase is mission-critical, but figuring out where your tests are lacking can be painful. You're already running your tests on a continuous integration server, let it do the heavy lifting. Coveralls works with your CI to sift through coverage data to find gaps you didn't know you had",
-                        "COPYC2t", "There were one or more errors in your submission. Please correct the marked fields below.",
+                        "COPYC@2t", "There were one or more errors in your submission. Please correct the marked fields below.",
                         "The text you provided is too long (the maximum length is 128 characters, your text contains 312 characters)."},
-                { "r", "COPYC2t", "There were one or more errors in your submission. Please correct the marked fields below.",
+                { "r", "COPYC@2t", "There were one or more errors in your submission. Please correct the marked fields below.",
                         "The text you provided is too short (the minimum length is 3 characters, your text contains 1 character)."}
         };
     }
@@ -59,7 +59,7 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
     public Object[][] emptyLoginAndOrPasswordDataProvider(){
         return new Object[][]{
                 { "", ""},
-                { "", "COPYC2t"},
+                { "", "COPYC@2t"},
                 { "limp_slim@ukr.net", ""}
         };
     }
@@ -67,11 +67,11 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
     @DataProvider
     public Object[][] injectionInsteadLogin (){
         return new Object[][]{
-                { "<script>alert(123)</script>", "COPYC2t", "There were one or more errors in your submission. Please correct the marked fields below.",
+                { "<script>alert(123)</script>", "COPYC@2t", "There were one or more errors in your submission. Please correct the marked fields below.",
                         "Please enter a valid email address."},
                 { "<form action=\"http://google.com\"><input type=\"submit\"></form>", "COPYC2t", "There were one or more errors in your submission. Please correct the marked fields below.",
                         "Please enter a valid email address."},
-                { "SELECT * FROM blog WHERE code LIKE 'a%'", "COPYC2t", "There were one or more errors in your submission. Please correct the marked fields below.",
+                { "SELECT * FROM blog WHERE code LIKE 'a%'", "COPYC@2t", "There were one or more errors in your submission. Please correct the marked fields below.",
                         "Please enter a valid email address."},
         };
     }

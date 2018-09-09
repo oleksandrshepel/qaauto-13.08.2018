@@ -12,6 +12,11 @@ public class LinkedinBaseTest {
     protected LinkedinHomePage linkedinHomePage;
     protected LinkedinLoginSubmitPage linkedinLoginSubmitPage;
     protected LinkedinSearchPage linkedinSearchPage;
+    protected LinkedinPasswordResetPage linkedinPasswordResetPage;
+    protected LinkedinRequestPasswordResetSubmitPage linkedinRequestPasswordResetSubmitPage;
+    protected LinkedinRetypePasswordPage linkedinRetypePasswordPage;
+    protected LinkedinPasswordResetSubmitPage linkedinPasswordResetSubmitPage;
+    protected LinkedinLogoutPage linkedinLogoutPage;
 
     private String mainURL;
 
