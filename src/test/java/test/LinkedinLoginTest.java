@@ -1,3 +1,5 @@
+package test;
+
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -106,7 +108,7 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
     @Test(dataProvider = "correctEmailAndWrongPasswordDataProvider")
     public void negativeCorrectLoginAndWrongPasswordLoginTest(String userEmail, String userPassword, String alertMessage, String alertMessagePassword){
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
-        LinkedinLoginSubmitPage linkedinLoginSubmitPage = linkedinLoginPage.login(userEmail, userPassword);
+        linkedinLoginSubmitPage = linkedinLoginPage.login(userEmail, userPassword);
         Assert.assertTrue(linkedinLoginSubmitPage.isPageLoaded(), "LoginSubmit page is not loaded");
         Assert.assertEquals(linkedinLoginSubmitPage.getAlertMessageText(), alertMessage, "Alert message text is wrong or is not displayed");
         Assert.assertEquals(linkedinLoginSubmitPage.getUserPasswordAlertText(),alertMessagePassword, "Alert message Password is wrong or is not displayed");
@@ -135,7 +137,7 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
 
     @Test(dataProvider = "injectionInsteadLogin")
     public void negativeJS_HTML_SQLInjectionsInsteadLoginLoginTest(String userEmail, String userPassword, String alertMessage, String alertMessageEmail){
-        //LinkedinLoginPage linkedinLoginPage = new LinkedinLoginPage(driver);
+        //page.LinkedinLoginPage linkedinLoginPage = new page.LinkedinLoginPage(driver);
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
         linkedinLoginSubmitPage = linkedinLoginPage.login(userEmail, userPassword);
         Assert.assertTrue(linkedinLoginSubmitPage.isPageLoaded(), "LoginSubmit page is not loaded");

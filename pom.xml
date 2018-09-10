@@ -21,6 +21,12 @@
             <version>6.14.3</version>
             <scope>test</scope>
         </dependency>
+        <!-- for working with email  -->
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
     </dependencies>
 
 

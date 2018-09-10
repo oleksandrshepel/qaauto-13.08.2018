@@ -1,3 +1,5 @@
+package page;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -23,7 +25,7 @@ public class LinkedinLoginPage extends LinkedinBasePage {
 
     public LinkedinLoginPage(WebDriver driver) {
         this.driver = driver;
-        PageFactory.initElements(driver, this); //Можем вычитать из другого класса тогда вместо this ставим LinkedinHomePage.class
+        PageFactory.initElements(driver, this); //Можем вычитать из другого класса тогда вместо this ставим page.LinkedinHomePage.class
     }
 
     public <T> T login(String userEmail, String userPassword) {
@@ -43,7 +45,7 @@ public class LinkedinLoginPage extends LinkedinBasePage {
         }
         else {
             return (T) this; // или Т()this;
-                            // или(T)PageFactory.initElements(driver, LinkedinLoginPage.class); - эта реализация вернет new LinkedinLoginPage() с проинициализированными полями веб елементов
+                            // или(T)PageFactory.initElements(driver, page.LinkedinLoginPage.class); - эта реализация вернет new page.LinkedinLoginPage() с проинициализированными полями веб елементов
                            // даную конструкцию следует использовать, если в конструкции возвращаемой пейджи мы не прописываем PageFactory.initElements(driver, this)
         }
     }

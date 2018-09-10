@@ -1,9 +1,12 @@
+package test;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
+import page.LinkedinRetypePasswordPage;
 
 import java.util.List;
 
@@ -38,7 +41,7 @@ public class LinkedinResetPasswordTest extends LinkedinBaseTest{
     @DataProvider
     public Object[][] changePassword() {
         return new Object[][]{
-                {"qaauto@ukr.net", "COPYC@2t6", "COPYC@2t7",
+                {"qaauto13082018@gmail.com", "COPYC@2t7", "COPYC@2t8",
                 "There were one or more errors in your submission. Please correct the marked fields below.",
                 "Hmm, that's not the right password. Please try again or request a new one."}
         };
@@ -53,11 +56,11 @@ public class LinkedinResetPasswordTest extends LinkedinBaseTest{
         linkedinPasswordResetPage.enterUserEmail(userEmail);
         linkedinRequestPasswordResetSubmitPage = linkedinPasswordResetPage.clickFindAccount();
         Assert.assertTrue(linkedinRequestPasswordResetSubmitPage.isPageLoaded(),"Request Password Reset Submit Page is not loaded");
-        //try {
-        //    sleep(120000);
-        //} catch (InterruptedException e) {
-        //    e.printStackTrace();
-        //}
+        /*try {
+            sleep(120000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } */
         //**************************************************************************************************************
         driver.get("https://www.ukr.net/");
         try {
@@ -103,14 +106,22 @@ public class LinkedinResetPasswordTest extends LinkedinBaseTest{
         linkedinHomePage = linkedinPasswordResetSubmitPage.clickGoHomepage();
         Assert.assertTrue(linkedinHomePage.isPageLoaded(), "Home page is not loaded");
         linkedinHomePage.clickProfileNavButton();
-        linkedinLogoutPage = linkedinHomePage.selectProfileNavDropdownItem("Sign out");
+        linkedinLoginPage = linkedinHomePage.selectProfileNavDropdownItem("Sign out");
+        /* Linkedin иногда выбрасывает на отдельную страницу /m/logout, тогда нужно заменить код на нижеприведённый
+        linkedinLogoutPage = linkedinHomePage.selectProfileNavDropdownItem("Sign out"); -- изначально Sign In вікидівал на страницу /m/Logout
         Assert.assertTrue(linkedinLogoutPage.isPageLoaded(), "Logout Page is not loaded");
-        //далее тест не идёт, поскольку форма для xpath недоступна
-        //linkedinLogoutPage.login(userEmail, password);
-        //Assert.assertEquals(linkedinLogoutPage.getAlertMessageText(), alertMessage, "Alert message text is wrong or is not displayed");
-        //Assert.assertEquals(linkedinLogoutPage.getUserPasswordAlertText(),alertMessagePassword, "Alert message Password is wrong or is not displayed");
-        //linkedinHomePage = linkedinLogoutPage.login(userEmail, newPassword);
-        //Assert.assertTrue(linkedinHomePage.isPageLoaded(), "Home page is not loaded");
+        linkedinLogoutPage.login(userEmail, password);
+        Assert.assertEquals(linkedinLogoutPage.getAlertMessageText(), alertMessage, "Alert message text is wrong or is not displayed");
+        Assert.assertEquals(linkedinLogoutPage.getUserPasswordAlertText(),alertMessagePassword, "Alert message Password is wrong or is not displayed");
+        linkedinHomePage = linkedinLogoutPage.login(userEmail, newPassword);
+        */
+        Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login Page is not loaded");
+        linkedinLoginSubmitPage = linkedinLoginPage.login(userEmail, password);
+        Assert.assertTrue(linkedinLoginSubmitPage.isPageLoaded(), "LoginSubmit page is not loaded");
+        Assert.assertEquals(linkedinLoginSubmitPage.getAlertMessageText(), alertMessage, "Alert message text is wrong or is not displayed");
+        Assert.assertEquals(linkedinLoginSubmitPage.getUserPasswordAlertText(),alertMessagePassword, "Alert message Password is wrong or is not displayed");
+        linkedinHomePage = linkedinLoginPage.login(userEmail, newPassword);
+        Assert.assertTrue(linkedinHomePage.isPageLoaded(), "Home page is not loaded");
 
     }
 }

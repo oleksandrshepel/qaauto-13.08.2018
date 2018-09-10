@@ -1,8 +1,11 @@
+package page;
+
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
+import util.GMailService;
 
 import static java.lang.Thread.sleep;
 
@@ -33,7 +36,20 @@ public class LinkedinPasswordResetPage extends LinkedinBasePage {
     }
 
     public <T> T clickFindAccount(){
+        //добавляем утилиту GMailService чтобы запустить сессию на ожидание нового письма.
+        // Коннект нужно сделать до метода findAccountButton.click(), иначе письмо пропустится.
+        // утилита ожидает именно новое письмо после конекта и не "роется" в старой почте
+        String messageSubject = "here's the link to reset your password";
+        String messageTo = "qaauto13082018@gmail.com";
+        String messageFrom = "security-noreply@linkedin.com";
+
+        GMailService gMailService = new GMailService();
+        gMailService.connect();
         findAccountButton.click();
+
+        String message = gMailService.waitMessage(messageSubject, messageTo, messageFrom, 120);
+        System.out.println("Content: " + message);
+
         try {
             sleep(3000);
         } catch (InterruptedException e) {

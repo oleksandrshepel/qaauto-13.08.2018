@@ -1,3 +1,5 @@
+package page;
+
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
@@ -71,6 +73,8 @@ public class LinkedinHomePage extends LinkedinBasePage {
             return (T) new LinkedinJobsPage(driver);
         if(getCurrentUrl().contains("/m/logout"))
             return (T) new LinkedinLogoutPage(driver);
+        if(getCurrentUrl().equals("https://www.linkedin.com/"))
+            return (T) new LinkedinLoginPage(driver);
         else return (T) this;
     }
 }

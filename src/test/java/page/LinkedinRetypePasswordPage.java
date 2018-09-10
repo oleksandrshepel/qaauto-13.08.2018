@@ -1,3 +1,5 @@
+package page;
+
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -37,6 +39,7 @@ public class LinkedinRetypePasswordPage extends LinkedinBasePage {
 
     public void enterNewPassword(String newPassword){
         newPasswordField.sendKeys(newPassword+Keys.TAB);
+        retypeNewPasswordField.sendKeys(newPassword+Keys.TAB);
     }
 
     public void enterRetypeNewPassword(String newPassword){
