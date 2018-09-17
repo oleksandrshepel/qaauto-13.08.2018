@@ -20,11 +20,21 @@ public class LinkedinSearchPage extends LinkedinBasePage {
     //аналогичный xpath "//li[@class[contains(.,'search-result search-result__occluded-item')]]"
     private List<WebElement> relevantSearchResults;
 
+    /**
+     * Constructor for Linkedin Search PageObject
+     * @param driver - driver instance from tests.
+     */
     public LinkedinSearchPage(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(driver, this);
+        waitUntilElementVisible(searchResultContainer, 10);//wait Добавляем после PageFactory, иначе не проинициализируется вебєлемент
     }
 
+    /**
+     * Defines whether PageObject loaded by checking current url, title and webelement visibility
+     *
+     * @return - boolean
+     */
     public boolean isPageLoaded() {
         return getCurrentUrl().equals("https://www.linkedin.com/search/results/index/?keywords=hr&origin=GLOBAL_SEARCH_HEADER")
                 && getCurrentTitle().contains("| Поиск | LinkedIn")
@@ -60,10 +70,23 @@ public class LinkedinSearchPage extends LinkedinBasePage {
         return result;
     }
     */
+
+    /**
+     * Defines number of searchresults
+     *
+     * @return - size of an array of search results
+     */
+
     public int getSearchResultsNumber() {
         return relevantSearchResults.size();
     }
 
+
+    /**
+     * Make list of strings with search results
+     *
+     * @return - list of search results
+     */
     public List<String> getSearchResultsList(){
         List<String> searchResultList = new ArrayList<String>();
         for(WebElement result: relevantSearchResults){
@@ -72,7 +95,7 @@ public class LinkedinSearchPage extends LinkedinBasePage {
         }
         return searchResultList;
     }
-
+    /*
     public int getRelevantSearchResults(String searchTag) {
         int result = 0;
         for(WebElement searchResult: relevantSearchResults){
@@ -84,8 +107,7 @@ public class LinkedinSearchPage extends LinkedinBasePage {
 
     private boolean compareContainerText(WebElement container, String searchTag){
         return container.getText().toLowerCase().contains(searchTag.toLowerCase());
-
-    }
+    }*/
 
 
 }

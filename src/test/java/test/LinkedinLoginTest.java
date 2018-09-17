@@ -6,6 +6,11 @@ import org.testng.annotations.Test;
 
 public class LinkedinLoginTest extends LinkedinBaseTest{
 
+    /**
+     * Test data
+     *
+     * @return - an array of test data
+     */
     @DataProvider
     public Object[][] validDataProvider() {
         return new Object[][]{
@@ -15,6 +20,11 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
         };
     }
 
+    /**
+     * Test data
+     *
+     * @return - an array of test data
+     */
     @DataProvider
     public Object[][] wrongEmailAndPasswordDataProvider() {
         return new Object[][]{
@@ -25,6 +35,11 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
         };
     }
 
+    /**
+     * Test data
+     *
+     * @return - an array of test data
+     */
     @DataProvider
     public Object[][] correctEmailAndWrongPasswordDataProvider() {
         return new Object[][]{
@@ -57,6 +72,11 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
         };
     }
 
+    /**
+     * Test data
+     *
+     * @return - an array of test data
+     */
     @DataProvider
     public Object[][] emptyLoginAndOrPasswordDataProvider(){
         return new Object[][]{
@@ -66,6 +86,11 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
         };
     }
 
+    /**
+     * Test data
+     *
+     * @return - an array of test data
+     */
     @DataProvider
     public Object[][] injectionInsteadLogin (){
         return new Object[][]{
@@ -79,21 +104,45 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
     }
 
 
-
+    /**
+     * Verify successful user Login
+     *
+     * Preconditions:
+     *  - Open new browser
+     *  - Navigate to 'Linkedin.com'
+     *
+     * Scenario:
+     *  - Verify that login page is loaded
+     *  - Enter user e-mail
+     *  - Enter user password
+     *  - Click 'Sign in' button
+     *  - Verify Home page is loaded
+     *  - close browser
+     */
     @Test(dataProvider = "validDataProvider")
     public void successfulLoginTest(String userEmail, String userPassword){
-        //Navigate to 'Linkedin.com'
-        //Verify that login page is loaded
-        //Enter user e-mail
-        //Enter user password
-        //Click 'Sign in' button
-        //Verify Home page is loaded
-
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "The Login page is not loaded");
         linkedinHomePage = linkedinLoginPage.login(userEmail, userPassword);
         Assert.assertTrue(linkedinHomePage.isPageLoaded(), "The Home page is not loaded");
     }
 
+    /**
+     * Verify impossibility of being logged in  using incorrect credentials
+     *
+     * Preconditions:
+     * - Open new browser
+     * - Navigate to 'Linkedin.com'
+     *
+     * Scenario:
+     * - Verify that login page is loaded
+     * - Enter user invalid e-mail
+     * - Enter user invalid password
+     * - Click 'Sign in' button
+     * - Verify Login submit page is loaded
+     * - Verify alert messages
+     * - Close browser
+     *
+     */
     @Test(dataProvider = "wrongEmailAndPasswordDataProvider")
     public void negativeWrongEmailAndPasswordLoginTest(String userEmail, String userPassword, String alertMessage, String alertMessageEmail){
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
@@ -105,6 +154,23 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
         //Assert.assertTrue(linkedinLoginSubmitPage.isAlertMessageEmailDisplayed(alertMessageEmail), "Alert message Email is wrong or is not displayed");
     }
 
+    /**
+     * Verify impossibility of being logged in using incorrect password
+     *
+     * Preconditions:
+     * - Open new browser
+     * - Navigate to 'Linkedin.com'
+     *
+     * Scenario:
+     * - Verify that login page is loaded
+     * - Enter user valid e-mail
+     * - Enter user invalid password
+     * - Click 'Sign in' button
+     * - Verify Login submit page is loaded
+     * - Verify alert messages
+     * - Close browser
+     *
+     */
     @Test(dataProvider = "correctEmailAndWrongPasswordDataProvider")
     public void negativeCorrectLoginAndWrongPasswordLoginTest(String userEmail, String userPassword, String alertMessage, String alertMessagePassword){
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
@@ -117,6 +183,23 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
         //Assert.assertTrue(linkedinLoginSubmitPage.isAlertMessagePasswordDisplayed(alertMessagePassword), "Alert message Password is wrong or is not displayed");
     }
 
+    /**
+     * Verify impossibility of being logged in using incorrect login
+     *
+     * Preconditions:
+     * - Open new browser
+     * - Navigate to 'Linkedin.com'
+     *
+     * Scenario:
+     * - Verify that login page is loaded
+     * - Enter user invalid e-mail
+     * - Enter user valid password
+     * - Click 'Sign in' button
+     * - Verify Login submit page is loaded
+     * - Verify alert messages
+     * - Close browser
+     *
+     */
     @Test (dataProvider = "wrongEmailAndCorrectPasswordDataProvider")
     public void negativeIncorrectLoginAndCorrectPasswordLoginTest(String userEmail, String userPassword, String alertMessage, String alertMessageEmail){
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
@@ -128,6 +211,20 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
         //Assert.assertTrue(linkedinLoginSubmitPage.isAlertMessageEmailDisplayed(alertMessageEmail), "Alert message Email is wrong or is not displayed");
     }
 
+    /**
+     * Verify impossibility of being logged in using empty credentials
+     *
+     * Preconditions:
+     * - Open new browser
+     * - Navigate to 'Linkedin.com'
+     *
+     * Scenario:
+     * - Verify that login page is loaded
+     * - Click 'Sign in' button having login and/or password fields empty
+     * - Verify current page hasn't changed
+     * - Close browser
+     *
+     */
     @Test(dataProvider = "emptyLoginAndOrPasswordDataProvider")
     public void negativeEmptyLoginAndOrPasswordLoginTest(String userEmail, String userPassword){
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
@@ -135,6 +232,23 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Incorrect page is displayed");
     }
 
+    /**
+     * Verify JS/SQL/HTML scripts are properly handled
+     *
+     * Preconditions:
+     * - Open new browser
+     * - Navigate to 'Linkedin.com'
+     *
+     * Scenario:
+     * - Verify that login page is loaded
+     * - Enter JS/SQL/HTML script in users's email field
+     * - Enter user valid password
+     * - Click 'Sign in' button
+     * - Verify Login submit page is loaded
+     * - Verify alert messages
+     * - Close browser
+     *
+     */
     @Test(dataProvider = "injectionInsteadLogin")
     public void negativeJS_HTML_SQLInjectionsInsteadLoginLoginTest(String userEmail, String userPassword, String alertMessage, String alertMessageEmail){
         //page.LinkedinLoginPage linkedinLoginPage = new page.LinkedinLoginPage(driver);

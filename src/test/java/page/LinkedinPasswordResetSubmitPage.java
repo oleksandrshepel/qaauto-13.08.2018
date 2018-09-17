@@ -7,6 +7,9 @@ import org.openqa.selenium.support.PageFactory;
 
 import static java.lang.Thread.sleep;
 
+/**
+ * Linkedin Password Reset Submit PageObject
+ */
 public class LinkedinPasswordResetSubmitPage extends LinkedinBasePage {
 
     @FindBy(xpath="//header[@class='content__header' and contains(text(),'Your password has been changed successfully')]")
@@ -15,27 +18,35 @@ public class LinkedinPasswordResetSubmitPage extends LinkedinBasePage {
     @FindBy(xpath = "//button[@id='reset-password-submit-button']")
     private WebElement goHomepageButton;
 
+    /**
+     * Conctructor for LinkedinPasswordResetSubmitPage
+     *
+     * @param driver - webdriver instance from a test
+     */
     public LinkedinPasswordResetSubmitPage(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(driver, this);
+        waitUntilElementVisible(contentHeaderText, 10);
     }
 
+    /**
+     * Defines whether page object is loaded by checking current url, title and visibility of a webelement
+     *
+     * @return - boolean
+     */
     public boolean isPageLoaded() {
         return getCurrentUrl().equals("https://www.linkedin.com/checkpoint/rp/password-reset-submit")
                 && getCurrentTitle().contains("You've successfully reset your password. | LinkedIn")
                 && contentHeaderText.isDisplayed();
     }
 
-    public <T> T clickGoHomepage(){
+    /**
+     * Makes click on reset password submit button
+     *
+     * @return - Linkedin Home Page object
+     */
+    public LinkedinHomePage clickGoHomepage(){
         goHomepageButton.click();
-        try {
-            sleep(4000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if (getCurrentUrl().contains("/feed"))
-            return (T) new LinkedinHomePage(driver, wait);
-        else return (T) this;
-
+        return new LinkedinHomePage(driver);
     }
 }

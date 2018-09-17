@@ -7,6 +7,9 @@ import org.openqa.selenium.support.PageFactory;
 
 import static java.lang.Thread.sleep;
 
+/**
+ * LinkedinLogout PageObject class
+ */
 public class LinkedinLogoutPage extends LinkedinBasePage {
 
     @FindBy(css = "#login-email")//(xpath="//input[@id='login-email']")
@@ -25,38 +28,60 @@ public class LinkedinLogoutPage extends LinkedinBasePage {
     private WebElement alertMessagePassword;
 
 
-
+    /**
+     * Constructor for LinkedinLogout PageObject
+     *
+     * @param driver - driver instance from test
+     */
     public LinkedinLogoutPage(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(driver, this);
+        waitUntilElementVisible(userEmailField, 10);
     }
 
+    /**
+     * Defines whether webElement displayed
+     *
+     * @return - boolean
+     */
     public boolean isPageLoaded() {
         return getCurrentUrl().equals("https://www.linkedin.com/m/logout/")
                 && getCurrentTitle().contains("LinkedIn")
-               // && userEmailField.isDisplayed() --не видит xpath
+                && userEmailField.isDisplayed() //--не видит xpath
                 ;
     }
 
-    public <T> T login(String userEmail, String userPassword) {
+    /**
+     * User login username/password.
+     *
+     * @param userEmail - character sequence with user email for login
+     * @param userPassword - character sequence with user password for login
+     * @param <T> -generic type
+     * @return - returns an appropriate PageObject depending current url
+     * (LinkedinHomePage, LinkedinLoginSubmitPage or LinkedinLoginPage)
+     */
+    public LinkedinHomePage login(String userEmail, String userPassword) {
         userEmailField.clear();
         userEmailField.sendKeys(userEmail);
         userPasswordField.sendKeys(userPassword);
         signInButton.click();
-        try {
-            sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if (getCurrentUrl().contains("/feed"))
-            return (T) new LinkedinHomePage(driver, wait);
-        else return (T) this;
+        return new LinkedinHomePage(driver);
     }
 
+    /**
+     * Retrieves a global/top alert message text
+     *
+     * @return - string of message text
+     */
     public String getAlertMessageText(){
         return globalAlertMessage.getText();
     }
 
+    /**
+     * Retrieves a password alert message text
+     *
+     * @return - string of message text
+     */
     public String getUserPasswordAlertText(){
         return alertMessagePassword.getText();
     }

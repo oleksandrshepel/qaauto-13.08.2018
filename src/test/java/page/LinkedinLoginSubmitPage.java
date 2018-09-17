@@ -5,6 +5,9 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
+/**
+ * LinkedinLoginSubmit PageObject class
+ */
 public class LinkedinLoginSubmitPage extends LinkedinBasePage{
     private String loginSubmitPageUrl = "https://www.linkedin.com/uas/login-submit";
 
@@ -20,26 +23,51 @@ public class LinkedinLoginSubmitPage extends LinkedinBasePage{
     @FindBy (xpath = "//span[@id='session_password-login-error']")
     private WebElement alertMessagePassword;
 
+    /**
+     * Constructor for LinkedinLoginSubmit PageObject
+     * @param driver - instance of webDriver from test
+     */
     public LinkedinLoginSubmitPage(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(driver, this);
+        waitUntilElementVisible(buttonJoinNow, 10);
 
     }
 
+    /**
+     * Defines whether pageObject loaded by checking url,title and webElement visibility
+     *
+     * @return - boolean
+     */
     public boolean isPageLoaded(){
         return getCurrentUrl().equals(loginSubmitPageUrl)
                 && getCurrentTitle().equals("Sign In to LinkedIn")
                 && buttonJoinNow.isDisplayed();
     }
 
+    /**
+     * Retrieves a global/top alert message text
+     *
+     * @return - string of message text
+     */
     public String getAlertMessageText(){
         return globalAlertMessage.getText();
     }
 
+    /**
+     * Retrieves a login alert message text
+     *
+     * @return - string of message text
+     */
     public String getUserEmailAlertText(){
         return alertMessageLogin.getText();
     }
 
+    /**
+     * Retrieves a password alert message text
+     *
+     * @return - string of message text
+     */
     public String getUserPasswordAlertText(){
         return alertMessagePassword.getText();
     }

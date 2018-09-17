@@ -56,13 +56,7 @@ public class LinkedinResetPasswordTest extends LinkedinBaseTest{
         linkedinPasswordResetPage.enterUserEmail(userEmail);
         linkedinRequestPasswordResetSubmitPage = linkedinPasswordResetPage.clickFindAccount();
         Assert.assertTrue(linkedinRequestPasswordResetSubmitPage.isPageLoaded(),"Request Password Reset Submit Page is not loaded");
-        /*try {
-            sleep(120000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } */
-        //**************************************************************************************************************
-        driver.get("https://www.ukr.net/");
+        /*driver.get("https://www.ukr.net/");
         try {
             sleep(3000);
         } catch (InterruptedException e) {
@@ -94,9 +88,8 @@ public class LinkedinResetPasswordTest extends LinkedinBaseTest{
             sleep(3000);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }
-        //**************************************************************************************************************
-        linkedinRetypePasswordPage = new LinkedinRetypePasswordPage(driver);
+        }*/
+        linkedinRetypePasswordPage = linkedinRequestPasswordResetSubmitPage.navigateToLinkFromEmail();
         Assert.assertTrue(linkedinRetypePasswordPage.isPageLoaded(), "Retype Password Page is not loaded");
         linkedinRetypePasswordPage.enterNewPassword(newPassword);
         linkedinRetypePasswordPage.enterRetypeNewPassword(newPassword);

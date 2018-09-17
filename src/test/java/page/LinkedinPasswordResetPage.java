@@ -5,10 +5,12 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
-import util.GMailService;
 
 import static java.lang.Thread.sleep;
 
+/**
+ * LinkedinPasswordReset PageObject class
+ */
 public class LinkedinPasswordResetPage extends LinkedinBasePage {
 
     @FindBy(xpath="//header[@class='content__header' and contains(text(),\"First, let's find your account\")]")
@@ -20,43 +22,49 @@ public class LinkedinPasswordResetPage extends LinkedinBasePage {
     @FindBy(xpath="//button[@id='reset-password-submit-button']")
     private WebElement findAccountButton;
 
+    /**
+     * Construc tor for LinkedinPasswordReset PageObject class
+     * @param driver - webDriver instance from test
+     */
     public LinkedinPasswordResetPage (WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
+        waitUntilElementVisible(contentHeaderText, 10);
     }
 
+    /**
+     * Defines whether webElement displayed
+     *
+     * @return - boolean
+     */
     public boolean isPageLoaded() {
         return getCurrentUrl().equals("https://www.linkedin.com/uas/request-password-reset?trk=uno-reg-guest-home-forgot-password")
                 && getCurrentTitle().contains("Reset Password | LinkedIn")
                 && contentHeaderText.isDisplayed();
     }
 
+    /**
+     * Types user email for searching
+     *
+     * @param email - char sequence with valid user email
+     */
     public void enterUserEmail(String email){
         userNameField.sendKeys(email+ Keys.TAB);
     }
 
-    public <T> T clickFindAccount(){
-        //добавляем утилиту GMailService чтобы запустить сессию на ожидание нового письма.
-        // Коннект нужно сделать до метода findAccountButton.click(), иначе письмо пропустится.
-        // утилита ожидает именно новое письмо после конекта и не "роется" в старой почте
-        String messageSubject = "here's the link to reset your password";
-        String messageTo = "qaauto13082018@gmail.com";
-        String messageFrom = "security-noreply@linkedin.com";
-
-        GMailService gMailService = new GMailService();
+    /**
+     * Click button find account for searching
+     *
+     * @return LinkedinRequestPasswordResetSubmit PageObject
+     */
+    public LinkedinRequestPasswordResetSubmitPage clickFindAccount(){
+        /* Утилита GMailService ожидает поступления на почту нового (именно нового) письма с определ'нніми параметрами.
+           Метод connect() необходимо вызвать до того, как Linkedin отправит письмо, в нашем случае до вызова
+           метода findAccountButton.click(), иначе письмо пропустится.
+           (!) Утилита ожидает именно новое письмо после конекта и не "роется" в старой почте
+        */
         gMailService.connect();
         findAccountButton.click();
-
-        String message = gMailService.waitMessage(messageSubject, messageTo, messageFrom, 120);
-        System.out.println("Content: " + message);
-
-        try {
-            sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if(getCurrentUrl().contains("/rp/request-password-reset-submit"))
-        return (T) new LinkedinRequestPasswordResetSubmitPage(driver);
-        else return (T) this;
+        return new LinkedinRequestPasswordResetSubmitPage(driver);
     }
 }
