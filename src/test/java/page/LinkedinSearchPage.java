@@ -27,7 +27,8 @@ public class LinkedinSearchPage extends LinkedinBasePage {
     public LinkedinSearchPage(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(driver, this);
-        waitUntilElementVisible(searchResultContainer, 10);//wait Добавляем после PageFactory, иначе не проинициализируется вебєлемент
+        //assert Добавляем после PageFactory, иначе не проинициализируется вебєлемент
+        assertWebElementIsVisible(searchResultContainer,10);
     }
 
     /**

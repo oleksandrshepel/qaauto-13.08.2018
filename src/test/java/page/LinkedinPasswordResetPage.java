@@ -29,7 +29,7 @@ public class LinkedinPasswordResetPage extends LinkedinBasePage {
     public LinkedinPasswordResetPage (WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this);
-        waitUntilElementVisible(contentHeaderText, 10);
+        assertWebElementIsVisible(contentHeaderText,10);
     }
 
     /**

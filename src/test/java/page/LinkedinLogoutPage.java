@@ -36,7 +36,7 @@ public class LinkedinLogoutPage extends LinkedinBasePage {
     public LinkedinLogoutPage(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(driver, this);
-        waitUntilElementVisible(userEmailField, 10);
+        assertWebElementIsVisible(userEmailField,10);
     }
 
     /**

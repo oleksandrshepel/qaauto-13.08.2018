@@ -30,7 +30,7 @@ public class LinkedinLoginSubmitPage extends LinkedinBasePage{
     public LinkedinLoginSubmitPage(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(driver, this);
-        waitUntilElementVisible(buttonJoinNow, 20);
+        assertWebElementIsVisible(buttonJoinNow,10);
 
     }
 

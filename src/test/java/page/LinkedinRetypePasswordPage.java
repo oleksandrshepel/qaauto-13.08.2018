@@ -36,7 +36,7 @@ public class LinkedinRetypePasswordPage extends LinkedinBasePage {
     public LinkedinRetypePasswordPage(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(driver, this);
-        waitUntilElementVisible(contentHeaderText, 10);
+        assertWebElementIsVisible(contentHeaderText,10);
     }
 
     /**

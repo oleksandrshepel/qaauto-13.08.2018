@@ -24,6 +24,7 @@ public class LinkedinRequestPasswordResetSubmitPage extends LinkedinBasePage {
     public LinkedinRequestPasswordResetSubmitPage(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(driver, this);
+        assertWebElementIsVisible(contentHeaderText,10);
     }
 
     /**

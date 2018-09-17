@@ -1,7 +1,9 @@
 package test;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import page.*;
@@ -32,7 +34,14 @@ public class LinkedinBaseTest {
      */
     @BeforeMethod
     public void beforeMethod(){
+        //WebDriverManager позволяет без предустановки драйвера работать с драйверами под разные браузеры.
+        // https://github.com/bonigarcia/webdrivermanager
+        WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
+        /*  Аналогично для firefox
+            WebDriverManager.firefoxdriver().setup();
+            driver = new FirefoxDriver();
+        */
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         mainURL = "https://www.linkedin.com/";
@@ -42,8 +51,9 @@ public class LinkedinBaseTest {
 
     /**
      * After method to quit webdriver
+     * alwaysRun = true - should be added otherwise if an exception is thrown in BeforeMethod then AfterMethod will not work
      */
-    @AfterMethod
+    @AfterMethod(alwaysRun = true)//добавили параметр (alwaysRun = true) иначе при выбросе exception в BeforeMethod наш AfterMethod не отработает
     public void afterMethod(){
         driver.quit();
     }
