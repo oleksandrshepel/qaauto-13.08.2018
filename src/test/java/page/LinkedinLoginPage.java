@@ -7,6 +7,10 @@ import org.openqa.selenium.support.PageFactory;
 
 import static java.lang.Thread.sleep;
 
+/**
+* LinkedinLogin Page Object class.
+ */
+
 public class LinkedinLoginPage extends LinkedinBasePage {
     private String landingPageTitle = "LinkedIn: Log In or Sign Up";
     private String mainURL = "https://www.linkedin.com/";
@@ -23,22 +27,32 @@ public class LinkedinLoginPage extends LinkedinBasePage {
     @FindBy(xpath = "//a[@class='link-forgot-password']")
     private WebElement forgotPasswordLink;
 
+    /**
+     * Constructor for LinkedinLoginPage.
+     *
+     * @param driver - driver instance from tests.
+     */
     public LinkedinLoginPage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(driver, this); //Можем вычитать из другого класса тогда вместо this ставим page.LinkedinHomePage.class
+        waitUntilElementVisible(signInButton, 10);
     }
 
+    /**
+     * User login username/password.
+     *
+     * @param userEmail - character sequence with user email for login
+     * @param userPassword - character sequence with user password for login
+     * @param <T> -
+     * @return - returns an appropriate PageObject depending current url
+     * (LinkedinHomePage, LinkedinLoginSubmitPage or LinkedinLoginPage)
+     */
     public <T> T login(String userEmail, String userPassword) {
         userEmailField.sendKeys(userEmail);
         userPasswordField.sendKeys(userPassword);
         signInButton.click();
-        try {
-            sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         if (getCurrentUrl().contains("/feed")) {
-            return (T) new LinkedinHomePage(driver, wait);
+            return (T) new LinkedinHomePage(driver);
         }
         if (getCurrentUrl().contains("/login-submit")) {
             return (T) new LinkedinLoginSubmitPage(driver);
@@ -50,18 +64,21 @@ public class LinkedinLoginPage extends LinkedinBasePage {
         }
     }
 
-    public <T> T clickForgotPasswordLink(){
+    /**
+     * Click link Forgot password so that password would be changed
+     *
+     * @return - LinkedinPasswordReset PageObject instance
+     */
+    public LinkedinPasswordResetPage clickForgotPasswordLink(){
         forgotPasswordLink.click();
-        try {
-            sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        if(getCurrentUrl().contains("/uas/request-password-reset"))
-            return (T) new LinkedinPasswordResetPage(driver);
-        else return (T) this;
+        return new LinkedinPasswordResetPage(driver);
     }
 
+    /**
+     * Defines whether page loaded by checking url< title and webElement visibility
+     *
+     * @return - boolean
+     */
     public boolean isPageLoaded(){
         return getCurrentUrl().equals(mainURL)
                 && getCurrentTitle().equals(landingPageTitle)
