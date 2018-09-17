@@ -30,7 +30,7 @@ public class LinkedinLoginSubmitPage extends LinkedinBasePage{
     public LinkedinLoginSubmitPage(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(driver, this);
-        waitUntilElementVisible(buttonJoinNow, 10);
+        waitUntilElementVisible(buttonJoinNow, 20);
 
     }
 
@@ -40,7 +40,7 @@ public class LinkedinLoginSubmitPage extends LinkedinBasePage{
      * @return - boolean
      */
     public boolean isPageLoaded(){
-        return getCurrentUrl().equals(loginSubmitPageUrl)
+        return getCurrentUrl().contains(loginSubmitPageUrl)
                 && getCurrentTitle().equals("Sign In to LinkedIn")
                 && buttonJoinNow.isDisplayed();
     }
@@ -60,7 +60,7 @@ public class LinkedinLoginSubmitPage extends LinkedinBasePage{
      * @return - string of message text
      */
     public String getUserEmailAlertText(){
-        return alertMessageLogin.getText();
+        return waitUntilElementVisible(alertMessageLogin, 10).getText();
     }
 
     /**
@@ -69,7 +69,7 @@ public class LinkedinLoginSubmitPage extends LinkedinBasePage{
      * @return - string of message text
      */
     public String getUserPasswordAlertText(){
-        return alertMessagePassword.getText();
+        return waitUntilElementVisible(alertMessagePassword,10).getText();
     }
 
     /*public boolean isAlertMessageDisplayed(String alertMessage){

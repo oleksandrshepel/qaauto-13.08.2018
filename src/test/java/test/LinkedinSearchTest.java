@@ -14,15 +14,21 @@ public class LinkedinSearchTest extends LinkedinBaseTest{
                 {"limp_slim@ukr.net", "COPYC2t", "hr"}
         };
     }
-    /*
-    - Open login page
-    - Verify login page is loaded
-    - Login with valid credentials
-    - Verify home page is loaded
-    - Search for 'hr' Search-term
-    - Verify Search page is loaded
-    - Verify 10 results are displayed on the search page
-    - Verify each result item contains search-term
+    /**
+     * Preconditions:
+     * - Open new browser
+     * - Navigate to 'Linkedin.com'
+     *
+     * Scenario:
+     * - Open login page
+     * - Verify login page is loaded
+     * - Login with valid credentials
+     * - Verify home page is loaded
+     * - Search for 'hr' Search-term
+     * - Verify Search page is loaded
+     * - Verify 10 results are displayed on the search page
+     * - Verify each result item contains search-term
+     * Close browser
      */
 
     @Test(dataProvider = "searchHomePage")
@@ -34,7 +40,6 @@ public class LinkedinSearchTest extends LinkedinBaseTest{
         linkedinSearchPage = linkedinHomePage.makeSearchRequest(requestData);
         Assert.assertTrue(linkedinSearchPage.isPageLoaded(), "The Search page is not loaded");
         Assert.assertEquals(linkedinSearchPage.getSearchResultsNumber(), 10, "Number of search results is incorrect");
-        //Assert.assertEquals(linkedinSearchPage.getRelevantSearchResults(requestData), linkedinSearchPage.getSearchResultsNumber(), "There are some irrelevant results");
         List<String> searchResultsList = linkedinSearchPage.getSearchResultsList();
         for(String result: searchResultsList){
             Assert.assertTrue(result.toLowerCase().contains(requestData),
