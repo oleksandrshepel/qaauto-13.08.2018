@@ -1,0 +1,38 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+  
+<suite name="Login Test Suite" verbose="1" >
+    <!-- Set parameter for broser-->
+    <parameter name="browserName" value="chrome" />
+    <parameter name="mainURL" value="https://www.linkedin.com/" />
+
+  <test name="Positive" >
+    <classes>
+       <class name="test.LinkedinLoginTest">
+          <methods>
+            <include name="successfulLoginTest" />
+          </methods>
+      </class>
+    </classes>
+  </test>
+  <test name="Empty values" >
+    <classes>
+      <class name="test.LinkedinLoginTest" >
+          <methods>
+            <include name="negativeEmptyLoginAndOrPasswordLoginTest" />
+          </methods>
+      </class>
+    </classes>
+  </test>
+  <test name="Negative" >
+    <classes>
+      <class name="test.LinkedinLoginTest" >
+         <methods>
+           <include name="negativeWrongEmailAndPasswordLoginTest" />
+           <include name="negativeCorrectLoginAndWrongPasswordLoginTest" />
+           <include name="negativeIncorrectLoginAndCorrectPasswordLoginTest" />
+           <include name="negativeJS_HTML_SQLInjectionsInsteadLoginLoginTest" />
+         </methods>
+      </class>
+    </classes>
+  </test>
+</suite>

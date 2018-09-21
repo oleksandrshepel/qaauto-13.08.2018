@@ -11,7 +11,7 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
      *
      * @return - an array of test data
      */
-    @DataProvider
+    @DataProvider //можно давать имя (name = "Authentication"), тогда в тесте запись будет выглядеть @Test(dataProvider = "Authentication")
     public Object[][] validDataProvider() {
         return new Object[][]{
                 { "limp_slim@ukr.net", "COPYC@2t7" },

@@ -9,5 +9,8 @@
         <module name="qaauto-13.08.2018" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="qaauto-13.08.2018" target="7" />
+    </bytecodeTargetLevel>
   </component>
 </project>

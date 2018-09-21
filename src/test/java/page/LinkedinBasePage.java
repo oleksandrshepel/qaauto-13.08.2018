@@ -5,7 +5,6 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.Assert;
 import util.GMailService;
 
 /**
@@ -41,7 +40,7 @@ public class LinkedinBasePage {
      * @return - webelement
      */
     protected WebElement waitUntilElementVisible(WebElement webElement, int timeOutInSeconds){
-       wait = new WebDriverWait(driver, timeOutInSeconds);
+        WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
         return wait.until(ExpectedConditions.visibilityOf(webElement));
     }
 
@@ -52,7 +51,7 @@ public class LinkedinBasePage {
      * @return - boolean
      */
     protected boolean isUrlContains(String partialUrl, int timeOutInSec){
-        wait = new WebDriverWait(driver, timeOutInSec);
+        WebDriverWait wait = new WebDriverWait(driver, timeOutInSec);
         try{
             return wait.until(ExpectedConditions.urlContains(partialUrl));
         } catch(TimeoutException e){
@@ -60,6 +59,12 @@ public class LinkedinBasePage {
         }
     }
 
+    /**
+     * Asserts whether webelement is visible or not
+     *
+     * @param element - a webelement that is expected to be visible
+     * @param timeOutInSec - a time period in seconds
+     */
     protected void assertWebElementIsVisible(WebElement element, int timeOutInSec){
         try {
             waitUntilElementVisible(element, timeOutInSec);

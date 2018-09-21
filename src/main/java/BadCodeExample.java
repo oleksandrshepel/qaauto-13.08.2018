@@ -8,7 +8,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.util.List;
 
 public class BadCodeExample {
-    public static void main(String[] args){
+   /* public static void main(String[] args){
         WebDriver driver = new ChromeDriver();
         WebDriverWait wait = new WebDriverWait(driver, 10);
         String mainURL = "https://www.google.com.ua/";
@@ -22,7 +22,6 @@ public class BadCodeExample {
         element.clear();
         element.sendKeys(searchTag + Keys.ENTER);
 
-        //List<WebElement> searchResults = driver.findElements(searchResultLocator);
         List<WebElement> searchResults = wait.until(ExpectedConditions.visibilityOfAllElements(driver.findElements(searchResultLocator)));
         System.out.println("Search results count: "+searchResults.size());
         int resultAmountPattern = 10;
@@ -38,8 +37,7 @@ public class BadCodeExample {
 
         }
 
-
         driver.close();
         driver.quit();
-    }
+    }*/
 }
