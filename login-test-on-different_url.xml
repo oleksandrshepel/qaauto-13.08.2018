@@ -1,5 +1,5 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-  
+  <!--параметр verbose определяет сложность отчета который потом формируется, в данном случае 1 менее детальный-->
 <suite name="Login Test Suite" verbose="1" >
     <!-- Set parameter for browser-->
     <parameter name="browserName" value="chrome" />
@@ -12,11 +12,19 @@
     </classes>
   </test>
 
-  <test name="eng.Linkedin" >
+  <test name="ru.Linkedin" >
       <!-- Set parameter for url-->
       <parameter name="mainURL" value="https://www.linkedin.com/" />
     <classes>
       <class name="test.LinkedinLoginTest" />
     </classes>
+  </test>
+
+  <test name="de.Linkedin" >
+      <!-- Set parameter for url-->
+      <parameter name="mainURL" value="https://www.linkedin.com/" />
+      <classes>
+        <class name="test.LinkedinLoginTest" />
+      </classes>
   </test>
 </suite>
