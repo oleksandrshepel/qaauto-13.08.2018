@@ -38,8 +38,9 @@ public class LinkedinHomePage extends LinkedinBasePage {
      *
      * @return - boolean
      */
+    // @Step
     public boolean isPageLoaded() {
-        return getCurrentUrl().equals("https://www.linkedin.com/feed/")
+        return getCurrentUrl().contains("https://www.linkedin.com/feed/")
                 && getCurrentTitle().contains("LinkedIn")
                 && profileNavItem.isDisplayed();
     }
@@ -49,6 +50,7 @@ public class LinkedinHomePage extends LinkedinBasePage {
      *
      * @return - boolean
      */
+    // @Step
     public boolean isNavSearchFieldDisplayed() {
         return searchField.isDisplayed();
     }
@@ -59,6 +61,7 @@ public class LinkedinHomePage extends LinkedinBasePage {
      * @param requestData - search term
      * @return - Linkedin Search PageObject
      */
+    // @Step
     public LinkedinSearchPage makeSearchRequest(String requestData) {
         searchField.click();
         searchField.sendKeys(requestData + Keys.ENTER);
@@ -68,6 +71,7 @@ public class LinkedinHomePage extends LinkedinBasePage {
     /**
      * Click profile navigate button
      */
+    // @Step
     public void clickProfileNavButton(){
         profileNavButton.click();
     }
@@ -80,19 +84,12 @@ public class LinkedinHomePage extends LinkedinBasePage {
      * @param <T> - generic type
      * @return - return an appropriate pageObject
      */
+    // @Step
     public <T> T selectProfileNavDropdownItem(String itemName){
         WebElement dropdownItem = driver.findElement(
                 By.xpath("//ul[@id='nav-settings__dropdown-options']/descendant:: a[contains(.,'"+itemName+"')]"));
         ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", dropdownItem);
         dropdownItem.click();
-        if (getCurrentUrl().contains("/psettings"))
-            return (T) new LinkedinProfileSettingsPage(driver, wait);
-        if (getCurrentUrl().contains("/help"))
-            return (T) new LinkedinHelpPage(driver);
-        if (getCurrentUrl().contains("/recent-activity"))
-            return (T) new LinkedinActivityPage(driver);
-        if (getCurrentUrl().contains("/mjobs/jobPosting"))
-            return (T) new LinkedinJobsPage(driver);
         if(getCurrentUrl().contains("/m/logout"))
             return (T) new LinkedinLogoutPage(driver);
         if(getCurrentUrl().equals("https://www.linkedin.com/"))

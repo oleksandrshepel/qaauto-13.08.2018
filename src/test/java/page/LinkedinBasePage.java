@@ -1,11 +1,14 @@
 package page;
 
-import org.openqa.selenium.TimeoutException;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.apache.log4j.Logger;
+import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import util.GMailService;
+import util.Parameters;
+import util.ServicesFunctions;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Linkedin parent object class
@@ -15,7 +18,13 @@ import util.GMailService;
 public class LinkedinBasePage {
     protected WebDriver driver;
     protected WebDriverWait wait;
+    private static Logger LOG;
     protected static GMailService gMailService = new GMailService();
+    private int ATTEMPTS = 5;
+
+    public LinkedinBasePage (){
+        this.LOG = Logger.getLogger(LinkedinBasePage.class);
+    }
 
     /**
      * Common method to get current url of an appropriate pageobject class
@@ -39,8 +48,9 @@ public class LinkedinBasePage {
      * @param timeOutInSeconds
      * @return - webelement
      */
+    // @Step
     protected WebElement waitUntilElementVisible(WebElement webElement, int timeOutInSeconds){
-        WebDriverWait wait = new WebDriverWait(driver, timeOutInSeconds);
+        WebDriverWait wait = new WebDriverWait(driver, Parameters.timeoutWaitDialogs);
         return wait.until(ExpectedConditions.visibilityOf(webElement));
     }
 
@@ -50,6 +60,7 @@ public class LinkedinBasePage {
      * @param timeOutInSec - timeout parameter in seconds
      * @return - boolean
      */
+    // @Step
     protected boolean isUrlContains(String partialUrl, int timeOutInSec){
         WebDriverWait wait = new WebDriverWait(driver, timeOutInSec);
         try{
@@ -65,6 +76,7 @@ public class LinkedinBasePage {
      * @param element - a webelement that is expected to be visible
      * @param timeOutInSec - a time period in seconds
      */
+    // @Step
     protected void assertWebElementIsVisible(WebElement element, int timeOutInSec){
         try {
             waitUntilElementVisible(element, timeOutInSec);
@@ -73,4 +85,161 @@ public class LinkedinBasePage {
             throw new AssertionError("Linkedin page is not loaded");
         }
     }
+
+    /**
+     * Wait visibility and clickability of WebElement by Locator and click on it
+     */
+    // @Step
+    public void clickOn(By locator) {
+        try {
+            new WebDriverWait(driver, 5).until(ExpectedConditions.elementToBeClickable(locator)).click();
+        } catch (StaleElementReferenceException e) {
+            // System.out.println("StaleElementReferenceException: " + e);
+            ATTEMPTS--;
+            ServicesFunctions.ThreadSleep(500);
+            if (ATTEMPTS > 0)
+                clickOn(locator);
+            else
+                throw new AssertionError(
+                        "There are too many StaleElementReferenceException while trying to click on element!!");
+        } catch (ElementClickInterceptedException ex) {
+            ATTEMPTS--;
+            if (ATTEMPTS > 0)
+                clickOn(locator);
+            else
+                throw new AssertionError("Превышено кол-во появлений ElementClickInterceptedException!");
+        } catch (Exception e) {
+            driver.findElement(locator).click();
+        }
+    }
+    /**
+     * Wait visibility and clickability of WebElement by Locator and sends keys in it
+     */
+    // @Step
+    public void enterTextIn(By locator, String value) {
+        try {
+            new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOfElementLocated(locator)).sendKeys(value+Keys.TAB);
+        } catch (StaleElementReferenceException e) {
+            // System.out.println("StaleElementReferenceException: " + e);
+            ATTEMPTS--;
+            ServicesFunctions.ThreadSleep(500);
+            if (ATTEMPTS > 0)
+                enterTextIn(locator, value);
+            else
+                throw new AssertionError(
+                        "There are too many StaleElementReferenceException while trying to click on element!!");
+        } catch (ElementClickInterceptedException ex) {
+            ATTEMPTS--;
+            if (ATTEMPTS > 0)
+                enterTextIn(locator, value);
+            else
+                throw new AssertionError("Превышено кол-во появлений ElementClickInterceptedException!");
+        } catch (Exception e) {
+            driver.findElement(locator).sendKeys(value+Keys.TAB);
+        }
+        LOG.info("Text '"+value+"'is entered in the field");
+    }
+    /**
+     * Wait visibility and clickability of WebElement by Locator and sends keys in it
+     */
+    // @Step
+    public void enterTextIn(WebElement element, String value) {
+        try {
+            new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOf(element)).sendKeys(value+Keys.TAB);
+        } catch (StaleElementReferenceException e) {
+            // System.out.println("StaleElementReferenceException: " + e);
+            ATTEMPTS--;
+            ServicesFunctions.ThreadSleep(500);
+            if (ATTEMPTS > 0)
+                enterTextIn(element, value);
+            else
+                throw new AssertionError(
+                        "There are too many StaleElementReferenceException while trying to click on element!!");
+        } catch (ElementClickInterceptedException ex) {
+            ATTEMPTS--;
+            if (ATTEMPTS > 0)
+                enterTextIn(element, value);
+            else
+                throw new AssertionError("Превышено кол-во появлений ElementClickInterceptedException!");
+        } catch (Exception e) {
+            element.sendKeys(value+Keys.TAB);
+        }
+        LOG.info("Text '"+value+"'is entered in the field");
+    }
+    /**
+     * Wait visibility and clickability of WebElement and click on it
+     */
+    // @Step
+    public void clickOn(WebElement element) {
+        try {
+            new WebDriverWait(driver, 5).until(ExpectedConditions.elementToBeClickable(element)).click();
+        } catch (StaleElementReferenceException e) {
+            // System.out.println("StaleElementReferenceException: " + e);
+            ATTEMPTS--;
+            ServicesFunctions.ThreadSleep(500);
+            if (ATTEMPTS > 0)
+                clickOn(element);
+            else
+                throw new AssertionError(
+                        "There are too many StaleElementReferenceException while trying to click on element!!");
+        } catch (ElementClickInterceptedException ex) {
+            ATTEMPTS--;
+            if (ATTEMPTS > 0)
+                clickOn(element);
+            else
+                throw new AssertionError("Превышено кол-во появлений ElementClickInterceptedException!");
+        } catch (Exception e) {
+            find(element).click();
+        }
+
+    }
+   // @Step
+    public WebElement find(By locator) {
+        driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        try {
+            wait.until(ExpectedConditions.elementToBeClickable(locator));
+        } catch (StaleElementReferenceException e) {
+            System.out.println("StaleElementReferenceException: " + e);
+            ATTEMPTS--;
+            ServicesFunctions.ThreadSleep(500);
+            if (ATTEMPTS > 0)
+                find(locator);
+            else
+                throw new AssertionError("Превышено кол-во появлений StaleElementReferenceException!");
+        } catch (ElementClickInterceptedException ex) {
+            ATTEMPTS--;
+            if (ATTEMPTS > 0)
+                find(locator);
+            else
+                throw new AssertionError("Превышено кол-во появлений ElementClickInterceptedException!");
+        }
+        driver.manage().timeouts().implicitlyWait(Parameters.implicitlyWait, TimeUnit.SECONDS);
+        return driver.findElement(locator);
+    }
+
+    // @Step
+    public WebElement find(WebElement element) {
+        driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
+        try {
+            wait.until(ExpectedConditions.elementToBeClickable(element));
+        } catch (StaleElementReferenceException e) {
+            System.out.println("StaleElementReferenceException: " + e);
+            ATTEMPTS--;
+            ServicesFunctions.ThreadSleep(500);
+            if (ATTEMPTS > 0)
+                find(element);
+            else
+                throw new AssertionError("Превышено кол-во появлений StaleElementReferenceException!");
+        } catch (ElementClickInterceptedException ex) {
+            ATTEMPTS--;
+            if (ATTEMPTS > 0)
+                find(element);
+            else
+                throw new AssertionError("Превышено кол-во появлений ElementClickInterceptedException!");
+        }
+        driver.manage().timeouts().implicitlyWait(Parameters.implicitlyWait, TimeUnit.SECONDS);
+        return element;
+    }
+
+
 }

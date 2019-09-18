@@ -1,5 +1,6 @@
 package page;
 
+import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -10,17 +11,18 @@ import org.openqa.selenium.support.PageFactory;
  */
 public class LinkedinLoginSubmitPage extends LinkedinBasePage{
     private String loginSubmitPageUrl = "https://www.linkedin.com/uas/login-submit";
+    private static Logger LOG;
 
-    @FindBy (xpath = "//a[@title='Join now']")
+    @FindBy (xpath = "//*[@href='/start/join']")
     private WebElement buttonJoinNow;
 
-    @FindBy (xpath = "//div[@id='global-alert-queue']")
-    private WebElement globalAlertMessage;
+    @FindBy (xpath = "//*[@class='header__content__heading']")
+    private WebElement headerContent;
 
-    @FindBy (xpath = "//span[@id='session_key-login-error']")
+    @FindBy (xpath = "//*[@id='error-for-username']")
     private WebElement alertMessageLogin;
 
-    @FindBy (xpath = "//span[@id='session_password-login-error']")
+    @FindBy (xpath = "//*[@id='error-for-password']")
     private WebElement alertMessagePassword;
 
     /**
@@ -30,63 +32,47 @@ public class LinkedinLoginSubmitPage extends LinkedinBasePage{
     public LinkedinLoginSubmitPage(WebDriver driver){
         this.driver = driver;
         PageFactory.initElements(driver, this);
+        LOG = Logger.getLogger(LinkedinLoginSubmitPage.class);
         assertWebElementIsVisible(buttonJoinNow,10);
-
+        LOG.info("LinkedinLoginSubmitPage is loaded");
     }
 
     /**
      * Defines whether pageObject loaded by checking url,title and webElement visibility
-     *
      * @return - boolean
      */
+    //@Step
     public boolean isPageLoaded(){
         return getCurrentUrl().contains(loginSubmitPageUrl)
-                && getCurrentTitle().equals("Sign In to LinkedIn")
+                && getCurrentTitle().contains("LinkedIn Sign in")
                 && buttonJoinNow.isDisplayed();
     }
 
     /**
      * Retrieves a global/top alert message text
-     *
      * @return - string of message text
      */
-    public String getAlertMessageText(){
-        return globalAlertMessage.getText();
+    //@Step
+    public String getHeaderContent(){
+        return headerContent.getText();
     }
 
     /**
      * Retrieves a login alert message text
-     *
      * @return - string of message text
      */
+    //@Step
     public String getUserEmailAlertText(){
         return waitUntilElementVisible(alertMessageLogin, 10).getText();
     }
 
     /**
      * Retrieves a password alert message text
-     *
      * @return - string of message text
      */
+    //@Step
     public String getUserPasswordAlertText(){
         return waitUntilElementVisible(alertMessagePassword,10).getText();
     }
-
-    /*public boolean isAlertMessageDisplayed(String alertMessage){
-        return getCurrentUrl().equals("https://www.linkedin.com/uas/login-submit")
-                && getCurrentTitle().equals("Sign In to LinkedIn")
-                && globalAlertMessage.getText().equals(alertMessage);
-    }*/
-
-    /*public boolean isAlertMessageEmailDisplayed(String alertMessage){
-        return getCurrentUrl().equals("https://www.linkedin.com/uas/login-submit")
-                && getCurrentTitle().equals("Sign In to LinkedIn")
-                && alertMessageLogin.getText().equals(alertMessage);
-    }*/
-    /*public boolean isAlertMessagePasswordDisplayed(String alertMessage){
-        return getCurrentUrl().equals("https://www.linkedin.com/uas/login-submit")
-                && getCurrentTitle().equals("Sign In to LinkedIn")
-                && alertMessagePassword.getText().equals(alertMessage);
-    }*/
 
 }

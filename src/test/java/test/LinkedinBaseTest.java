@@ -11,7 +11,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 import page.*;
+import util.ServicesFunctions;
 
+import java.io.File;
 import  java.lang.*;
 
 /**
@@ -20,6 +22,8 @@ import  java.lang.*;
  */
 public class LinkedinBaseTest {
     protected WebDriver driver;
+    protected boolean isTestPass = false;
+    protected String pathToScreenShot;
     protected LinkedinLoginPage linkedinLoginPage;
     protected LinkedinHomePage linkedinHomePage;
     protected LinkedinLoginSubmitPage linkedinLoginSubmitPage;
@@ -36,7 +40,7 @@ public class LinkedinBaseTest {
      */
     @Parameters({"browserName","mainURL"})
     @BeforeMethod
-    public void beforeMethod (@Optional("chrome") String browserName,
+    public void beforeMethod (@Optional("firefox") String browserName,
                               @Optional("https://www.linkedin.com/") String mainURL) throws Exception {
         //Аннотация @Optional("chrome") используется для того, чтобы указать дефолтное значение параметров.
         //Это даст возможность запускать тесты из Intellij, а анотация @Parameters позволит сделать запуск из xml файла (пр.кл.мыши по xml файлу -> run)
@@ -45,7 +49,7 @@ public class LinkedinBaseTest {
         // https://github.com/bonigarcia/webdrivermanager
         switch(browserName.toLowerCase()){
             case "chrome":
-                WebDriverManager.chromedriver().setup();
+                WebDriverManager.chromedriver().version("77.0.3865.40").setup();
                 driver = new ChromeDriver();
                 break;
             case "firefox":
@@ -67,6 +71,13 @@ public class LinkedinBaseTest {
             default:
                 throw new Exception("Can not work with a type of browser "+browserName);
         }
+        File file = new File(""); //Мы создали обьект файлы без пути для того чтобы потом спросить нас о пути
+        //Этот метод создает путь к папкам которые мы создали папку с именем , пекедж с именем, имя файла и его разширение
+        pathToScreenShot = file.getAbsolutePath() + "\\target\\screenshot\\"
+                + this.getClass().getPackage().getName() + "\\"
+                + this.getClass().getSimpleName() + "\\";// + new Object(){}.getClass().getEnclosingMethod().getName() + ".jpg";
+
+
         driver.manage().window().maximize();
         driver.get(mainURL);
         linkedinLoginPage = new LinkedinLoginPage(driver);
@@ -78,7 +89,17 @@ public class LinkedinBaseTest {
      */
     @AfterMethod(alwaysRun = true)//добавили параметр (alwaysRun = true) иначе при выбросе exception в BeforeMethod наш AfterMethod не отработает
     public void afterMethod(){
-        driver.quit();
+        if (!(driver == null)) { //Если дравера нету то ничего закрывать
+            if (!isTestPass) {
+                //Только в случаи false если тест упадет при закрытии драйвера снимать скринШот
+                ServicesFunctions.screenShot(driver, pathToScreenShot);
+            }
+            driver.quit();
+        }
+    }
+
+    protected void setIsTestPass(boolean value){
+        isTestPass = value;
     }
 
 }

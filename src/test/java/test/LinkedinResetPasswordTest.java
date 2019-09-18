@@ -2,6 +2,7 @@ package test;
 
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
+import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 public class LinkedinResetPasswordTest extends LinkedinBaseTest{
@@ -47,6 +48,7 @@ public class LinkedinResetPasswordTest extends LinkedinBaseTest{
      *- Verify "your password was successfully reset" email has been sent
      * Close browser
      */
+    @Ignore
     @Test(dataProvider = "changePassword")
     public void resetPasswordTest(String userEmail, String password, String newPassword,
                                   String alertMessage, String alertMessagePassword){
@@ -70,7 +72,7 @@ public class LinkedinResetPasswordTest extends LinkedinBaseTest{
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login Page is not loaded");
         linkedinLoginSubmitPage = linkedinLoginPage.login(userEmail, password);
         Assert.assertTrue(linkedinLoginSubmitPage.isPageLoaded(), "LoginSubmit page is not loaded");
-        Assert.assertEquals(linkedinLoginSubmitPage.getAlertMessageText(), alertMessage, "Alert message text is wrong or is not displayed");
+        Assert.assertEquals(linkedinLoginSubmitPage.getHeaderContent(), alertMessage, "Alert message text is wrong or is not displayed");
         Assert.assertEquals(linkedinLoginSubmitPage.getUserPasswordAlertText(),alertMessagePassword, "Alert message Password is wrong or is not displayed");
         linkedinHomePage = linkedinLoginPage.login(userEmail, newPassword);
         Assert.assertTrue(linkedinHomePage.isPageLoaded(), "Home page is not loaded");

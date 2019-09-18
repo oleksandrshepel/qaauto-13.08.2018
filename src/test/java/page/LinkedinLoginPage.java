@@ -1,6 +1,6 @@
 package page;
 
-import org.openqa.selenium.TimeoutException;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -15,18 +15,25 @@ import static java.lang.Thread.sleep;
 public class LinkedinLoginPage extends LinkedinBasePage {
     private String landingPageTitle = "LinkedIn: Log In or Sign Up";
     private String mainURL = "https://www.linkedin.com/";
+    private static Logger LOG;
 
-    @FindBy(xpath = "//input[@id='login-email']") //аннотация заменяет initElements
+    @FindBy(xpath = "//*[@class='nav__button-secondary']")
+    private WebElement signInUpperButton;
+
+    @FindBy(xpath = "//*[@name='session_key']") //аннотация заменяет initElements
     private WebElement userEmailField;
 
-    @FindBy(xpath = "//input[@id='login-password']")
+    @FindBy(xpath = "//*[@name='session_password']")
     private WebElement userPasswordField;
 
-    @FindBy(xpath = "//input[@id='login-submit']")
+    @FindBy(xpath = "//*[@class='sign-in-form__submit-btn']")
     private WebElement signInButton;
 
-    @FindBy(xpath = "//a[@class='link-forgot-password']")
+    @FindBy(xpath = "//a[@name='guest_homepage-basic_forgot_password']")
     private WebElement forgotPasswordLink;
+
+    @FindBy (xpath = "//div[@class='input input--error']//p[@role='alert']")
+    private WebElement alertMessageLoginPassword;
 
     /**
      * Constructor for LinkedinLoginPage.
@@ -35,8 +42,9 @@ public class LinkedinLoginPage extends LinkedinBasePage {
      */
     public LinkedinLoginPage(WebDriver driver) {
         this.driver = driver;
+        LOG = Logger.getLogger(LinkedinLoginPage.class);
         PageFactory.initElements(driver, this); //Можем вычитать из другого класса тогда вместо this ставим page.LinkedinHomePage.class
-        assertWebElementIsVisible(signInButton,10);
+        assertWebElementIsVisible(signInUpperButton,10);
     }
 
     /**
@@ -48,17 +56,21 @@ public class LinkedinLoginPage extends LinkedinBasePage {
      * @return - returns an appropriate PageObject depending current url
      * (LinkedinHomePage, LinkedinLoginSubmitPage or LinkedinLoginPage)
      */
+    // @Step
     public <T> T login(String userEmail, String userPassword) {
-        userEmailField.sendKeys(userEmail);
-        userPasswordField.sendKeys(userPassword);
-        signInButton.click();
+        enterTextIn(userEmailField, userEmail);
+        enterTextIn(userPasswordField, userPassword);
+        clickOn(signInButton);
         if (isUrlContains("/feed", 5)) {
+            LOG.info("Use has been logged in successfully");
             return (T) new LinkedinHomePage(driver);
         }
         if (isUrlContains("/login-submit", 5)) {
+            LOG.info("Use got navigated to the LinkedinLoginSubmitPage");
             return (T) new LinkedinLoginSubmitPage(driver);
         }
         else {
+            LOG.info("Use has been logged in successfully and stayed on the Login page");
             return (T) this; // или Т()this;
                             // или(T)PageFactory.initElements(driver, page.LinkedinLoginPage.class); - эта реализация вернет new page.LinkedinLoginPage() с проинициализированными полями веб елементов
                            // даную конструкцию следует использовать, если в конструкции возвращаемой пейджи мы не прописываем PageFactory.initElements(driver, this)
@@ -70,8 +82,10 @@ public class LinkedinLoginPage extends LinkedinBasePage {
      *
      * @return - LinkedinPasswordReset PageObject instance
      */
+    // @Step
     public LinkedinPasswordResetPage clickForgotPasswordLink(){
-        forgotPasswordLink.click();
+        clickOn(forgotPasswordLink);
+        LOG.info("Forgot password link was clicked");
         return new LinkedinPasswordResetPage(driver);
     }
 
@@ -80,10 +94,20 @@ public class LinkedinLoginPage extends LinkedinBasePage {
      *
      * @return - boolean
      */
+    // @Step
     public boolean isPageLoaded(){
         return getCurrentUrl().equals(mainURL)
                 && getCurrentTitle().equals(landingPageTitle)
-                && signInButton.isDisplayed();
+                && signInUpperButton.isDisplayed();
+    }
+
+    /**
+     * Retrieves a password alert message text
+     * @return - string of message text
+     */
+    //@Step
+    public String getUserLoginPasswordAlertText(){
+        return waitUntilElementVisible(alertMessageLoginPassword,10).getText();
     }
 
 }
