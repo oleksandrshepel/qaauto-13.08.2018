@@ -14,7 +14,7 @@ import static java.lang.Thread.sleep;
 
 public class LinkedinLoginPage extends LinkedinBasePage {
     private String landingPageTitle = "LinkedIn: Log In or Sign Up";
-    private String mainURL = "https://www.linkedin.com/";
+    private static final String mainURL = "https://www.linkedin.com/";
     private static Logger LOG;
 
     @FindBy(xpath = "//*[@class='nav__button-secondary']")
@@ -37,7 +37,6 @@ public class LinkedinLoginPage extends LinkedinBasePage {
 
     /**
      * Constructor for LinkedinLoginPage.
-     *
      * @param driver - driver instance from tests.
      */
     public LinkedinLoginPage(WebDriver driver) {
@@ -56,7 +55,6 @@ public class LinkedinLoginPage extends LinkedinBasePage {
      * @return - returns an appropriate PageObject depending current url
      * (LinkedinHomePage, LinkedinLoginSubmitPage or LinkedinLoginPage)
      */
-    // @Step
     public <T> T login(String userEmail, String userPassword) {
         enterTextIn(userEmailField, userEmail);
         enterTextIn(userPasswordField, userPassword);
@@ -82,7 +80,6 @@ public class LinkedinLoginPage extends LinkedinBasePage {
      *
      * @return - LinkedinPasswordReset PageObject instance
      */
-    // @Step
     public LinkedinPasswordResetPage clickForgotPasswordLink(){
         clickOn(forgotPasswordLink);
         LOG.info("Forgot password link was clicked");
@@ -94,7 +91,6 @@ public class LinkedinLoginPage extends LinkedinBasePage {
      *
      * @return - boolean
      */
-    // @Step
     public boolean isPageLoaded(){
         return getCurrentUrl().equals(mainURL)
                 && getCurrentTitle().equals(landingPageTitle)
@@ -105,7 +101,6 @@ public class LinkedinLoginPage extends LinkedinBasePage {
      * Retrieves a password alert message text
      * @return - string of message text
      */
-    //@Step
     public String getUserLoginPasswordAlertText(){
         return waitUntilElementVisible(alertMessageLoginPassword,10).getText();
     }

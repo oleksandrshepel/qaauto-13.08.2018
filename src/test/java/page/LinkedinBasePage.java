@@ -48,7 +48,7 @@ public class LinkedinBasePage {
      * @param timeOutInSeconds
      * @return - webelement
      */
-    // @Step
+
     protected WebElement waitUntilElementVisible(WebElement webElement, int timeOutInSeconds){
         WebDriverWait wait = new WebDriverWait(driver, Parameters.timeoutWaitDialogs);
         return wait.until(ExpectedConditions.visibilityOf(webElement));
@@ -60,7 +60,7 @@ public class LinkedinBasePage {
      * @param timeOutInSec - timeout parameter in seconds
      * @return - boolean
      */
-    // @Step
+
     protected boolean isUrlContains(String partialUrl, int timeOutInSec){
         WebDriverWait wait = new WebDriverWait(driver, timeOutInSec);
         try{
@@ -76,7 +76,7 @@ public class LinkedinBasePage {
      * @param element - a webelement that is expected to be visible
      * @param timeOutInSec - a time period in seconds
      */
-    // @Step
+
     protected void assertWebElementIsVisible(WebElement element, int timeOutInSec){
         try {
             waitUntilElementVisible(element, timeOutInSec);
@@ -89,14 +89,14 @@ public class LinkedinBasePage {
     /**
      * Wait visibility and clickability of WebElement by Locator and click on it
      */
-    // @Step
+
     public void clickOn(By locator) {
         try {
             new WebDriverWait(driver, 5).until(ExpectedConditions.elementToBeClickable(locator)).click();
         } catch (StaleElementReferenceException e) {
             // System.out.println("StaleElementReferenceException: " + e);
             ATTEMPTS--;
-            ServicesFunctions.ThreadSleep(500);
+            ServicesFunctions.threadSleep(500);
             if (ATTEMPTS > 0)
                 clickOn(locator);
             else
@@ -115,14 +115,14 @@ public class LinkedinBasePage {
     /**
      * Wait visibility and clickability of WebElement by Locator and sends keys in it
      */
-    // @Step
+
     public void enterTextIn(By locator, String value) {
         try {
             new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOfElementLocated(locator)).sendKeys(value+Keys.TAB);
         } catch (StaleElementReferenceException e) {
             // System.out.println("StaleElementReferenceException: " + e);
             ATTEMPTS--;
-            ServicesFunctions.ThreadSleep(500);
+            ServicesFunctions.threadSleep(500);
             if (ATTEMPTS > 0)
                 enterTextIn(locator, value);
             else
@@ -142,14 +142,14 @@ public class LinkedinBasePage {
     /**
      * Wait visibility and clickability of WebElement by Locator and sends keys in it
      */
-    // @Step
+
     public void enterTextIn(WebElement element, String value) {
         try {
             new WebDriverWait(driver, 5).until(ExpectedConditions.visibilityOf(element)).sendKeys(value+Keys.TAB);
         } catch (StaleElementReferenceException e) {
             // System.out.println("StaleElementReferenceException: " + e);
             ATTEMPTS--;
-            ServicesFunctions.ThreadSleep(500);
+            ServicesFunctions.threadSleep(500);
             if (ATTEMPTS > 0)
                 enterTextIn(element, value);
             else
@@ -169,14 +169,13 @@ public class LinkedinBasePage {
     /**
      * Wait visibility and clickability of WebElement and click on it
      */
-    // @Step
+
     public void clickOn(WebElement element) {
         try {
             new WebDriverWait(driver, 5).until(ExpectedConditions.elementToBeClickable(element)).click();
         } catch (StaleElementReferenceException e) {
-            // System.out.println("StaleElementReferenceException: " + e);
             ATTEMPTS--;
-            ServicesFunctions.ThreadSleep(500);
+            ServicesFunctions.threadSleep(500);
             if (ATTEMPTS > 0)
                 clickOn(element);
             else
@@ -193,15 +192,14 @@ public class LinkedinBasePage {
         }
 
     }
-   // @Step
+
     public WebElement find(By locator) {
-        driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
         try {
             wait.until(ExpectedConditions.elementToBeClickable(locator));
         } catch (StaleElementReferenceException e) {
             System.out.println("StaleElementReferenceException: " + e);
             ATTEMPTS--;
-            ServicesFunctions.ThreadSleep(500);
+            ServicesFunctions.threadSleep(500);
             if (ATTEMPTS > 0)
                 find(locator);
             else
@@ -213,19 +211,16 @@ public class LinkedinBasePage {
             else
                 throw new AssertionError("Превышено кол-во появлений ElementClickInterceptedException!");
         }
-        driver.manage().timeouts().implicitlyWait(Parameters.implicitlyWait, TimeUnit.SECONDS);
         return driver.findElement(locator);
     }
 
-    // @Step
     public WebElement find(WebElement element) {
-        driver.manage().timeouts().implicitlyWait(0, TimeUnit.SECONDS);
         try {
             wait.until(ExpectedConditions.elementToBeClickable(element));
         } catch (StaleElementReferenceException e) {
             System.out.println("StaleElementReferenceException: " + e);
             ATTEMPTS--;
-            ServicesFunctions.ThreadSleep(500);
+            ServicesFunctions.threadSleep(500);
             if (ATTEMPTS > 0)
                 find(element);
             else
@@ -237,8 +232,11 @@ public class LinkedinBasePage {
             else
                 throw new AssertionError("Превышено кол-во появлений ElementClickInterceptedException!");
         }
-        driver.manage().timeouts().implicitlyWait(Parameters.implicitlyWait, TimeUnit.SECONDS);
         return element;
+    }
+
+    protected void scrollToElement(WebElement element) {
+        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);
     }
 
 

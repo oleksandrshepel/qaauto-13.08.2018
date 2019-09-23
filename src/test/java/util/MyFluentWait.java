@@ -14,15 +14,9 @@ public class MyFluentWait extends FluentWait<WebDriver> {
         this.driver = driver;
     }
 
-    public MyFluentWait(WebDriver input) {
-        super(input);
-    }
-
     @Override
     protected RuntimeException timeoutException(String message, Throwable lastException) {
         String screenshotUrl = ServicesFunctions.takeScreenshot(driver);
         return new WaitingTimeoutValidationException(lastException, waitDescription + "&lt;a href="+screenshotUrl+" &gt;screen&lt;/a&gt; ", screenshotUrl);
-
-//		return super.timeoutException(message, lastException);
     }
 }

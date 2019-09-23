@@ -41,7 +41,6 @@ public class LinkedinLoginSubmitPage extends LinkedinBasePage{
      * Defines whether pageObject loaded by checking url,title and webElement visibility
      * @return - boolean
      */
-    //@Step
     public boolean isPageLoaded(){
         return getCurrentUrl().contains(loginSubmitPageUrl)
                 && getCurrentTitle().contains("LinkedIn Sign in")
@@ -52,7 +51,6 @@ public class LinkedinLoginSubmitPage extends LinkedinBasePage{
      * Retrieves a global/top alert message text
      * @return - string of message text
      */
-    //@Step
     public String getHeaderContent(){
         return headerContent.getText();
     }
@@ -61,7 +59,6 @@ public class LinkedinLoginSubmitPage extends LinkedinBasePage{
      * Retrieves a login alert message text
      * @return - string of message text
      */
-    //@Step
     public String getUserEmailAlertText(){
         return waitUntilElementVisible(alertMessageLogin, 10).getText();
     }
@@ -70,7 +67,6 @@ public class LinkedinLoginSubmitPage extends LinkedinBasePage{
      * Retrieves a password alert message text
      * @return - string of message text
      */
-    //@Step
     public String getUserPasswordAlertText(){
         return waitUntilElementVisible(alertMessagePassword,10).getText();
     }

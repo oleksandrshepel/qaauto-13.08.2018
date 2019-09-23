@@ -19,9 +19,6 @@ public class LinkedinHomePage extends LinkedinBasePage {
     @FindBy (xpath="//button[@id='nav-settings__dropdown-trigger']")
     private WebElement profileNavButton;
 
-    //@FindBy (xpath="//a[@data-control-name='nav.settings_account_manage_account']")
-    //private WebElement settingsAndPrivacyLink;
-
     /**
      * Constructor for LinkedinHomePage.
      *
@@ -38,7 +35,7 @@ public class LinkedinHomePage extends LinkedinBasePage {
      *
      * @return - boolean
      */
-    // @Step
+
     public boolean isPageLoaded() {
         return getCurrentUrl().contains("https://www.linkedin.com/feed/")
                 && getCurrentTitle().contains("LinkedIn")
@@ -50,7 +47,7 @@ public class LinkedinHomePage extends LinkedinBasePage {
      *
      * @return - boolean
      */
-    // @Step
+
     public boolean isNavSearchFieldDisplayed() {
         return searchField.isDisplayed();
     }
@@ -61,17 +58,17 @@ public class LinkedinHomePage extends LinkedinBasePage {
      * @param requestData - search term
      * @return - Linkedin Search PageObject
      */
-    // @Step
+
     public LinkedinSearchPage makeSearchRequest(String requestData) {
-        searchField.click();
-        searchField.sendKeys(requestData + Keys.ENTER);
+        clickOn(searchField);
+        enterTextIn(searchField, requestData + Keys.ENTER);
         return new LinkedinSearchPage(driver);
     }
 
     /**
      * Click profile navigate button
      */
-    // @Step
+
     public void clickProfileNavButton(){
         profileNavButton.click();
     }
@@ -84,7 +81,7 @@ public class LinkedinHomePage extends LinkedinBasePage {
      * @param <T> - generic type
      * @return - return an appropriate pageObject
      */
-    // @Step
+
     public <T> T selectProfileNavDropdownItem(String itemName){
         WebElement dropdownItem = driver.findElement(
                 By.xpath("//ul[@id='nav-settings__dropdown-options']/descendant:: a[contains(.,'"+itemName+"')]"));

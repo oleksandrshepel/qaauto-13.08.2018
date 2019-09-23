@@ -5,8 +5,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-import static java.lang.Thread.sleep;
-
 /**
  * LinkedinLogout PageObject class
  */
@@ -30,7 +28,6 @@ public class LinkedinLogoutPage extends LinkedinBasePage {
 
     /**
      * Constructor for LinkedinLogout PageObject
-     *
      * @param driver - driver instance from test
      */
     public LinkedinLogoutPage(WebDriver driver){
@@ -41,14 +38,12 @@ public class LinkedinLogoutPage extends LinkedinBasePage {
 
     /**
      * Defines whether webElement displayed
-     *
      * @return - boolean
      */
     public boolean isPageLoaded() {
         return getCurrentUrl().equals("https://www.linkedin.com/m/logout/")
                 && getCurrentTitle().contains("LinkedIn")
-                && userEmailField.isDisplayed() //--не видит xpath
-                ;
+                && userEmailField.isDisplayed();
     }
 
     /**
@@ -56,7 +51,6 @@ public class LinkedinLogoutPage extends LinkedinBasePage {
      *
      * @param userEmail - character sequence with user email for login
      * @param userPassword - character sequence with user password for login
-     * @param <T> -generic type
      * @return - returns an appropriate PageObject depending current url
      * (LinkedinHomePage, LinkedinLoginSubmitPage or LinkedinLoginPage)
      */
@@ -70,7 +64,6 @@ public class LinkedinLogoutPage extends LinkedinBasePage {
 
     /**
      * Retrieves a global/top alert message text
-     *
      * @return - string of message text
      */
     public String getAlertMessageText(){
@@ -79,7 +72,6 @@ public class LinkedinLogoutPage extends LinkedinBasePage {
 
     /**
      * Retrieves a password alert message text
-     *
      * @return - string of message text
      */
     public String getUserPasswordAlertText(){

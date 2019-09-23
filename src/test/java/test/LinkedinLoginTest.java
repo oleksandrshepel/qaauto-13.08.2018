@@ -6,7 +6,10 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 public class LinkedinLoginTest extends LinkedinBaseTest{
-    private Logger LOG = Logger.getLogger(LinkedinLoginTest.class);
+
+    public LinkedinLoginTest(){
+        LOG = Logger.getLogger(LinkedinLoginTest.class);
+    }
 
     /**
      * Test data
@@ -83,7 +86,6 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
 
     /**
      * Test data
-     *
      * @return - an array of test data
      */
     @DataProvider
@@ -97,7 +99,6 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
 
     /**
      * Test data
-     *
      * @return - an array of test data
      */
     @DataProvider
@@ -130,7 +131,7 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
     @Test(dataProvider = "validDataProvider")
     public void successfulLoginTest(String userEmail, String userPassword){
         String testName = new Object(){}.getClass().getEnclosingMethod().getName();
-        pathToScreenShot += testName + ".jpg";
+        pathToScreenShot += testName;
         LOG.info("Test scenario: "+testName);
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "The Login page is not loaded");
         linkedinHomePage = linkedinLoginPage.login(userEmail, userPassword);
@@ -159,7 +160,7 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
     @Test(dataProvider = "wrongEmailAndPasswordDataProvider")
     public void negativeWrongEmailAndPasswordLoginTest(String userEmail, String userPassword, String alertMessage, String alertMessageEmail){
         String testName = new Object(){}.getClass().getEnclosingMethod().getName();
-        pathToScreenShot += testName + ".jpg";
+        pathToScreenShot += testName;
         LOG.info("Test scenario: "+testName);
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
         linkedinLoginSubmitPage = linkedinLoginPage.login(userEmail, userPassword);
@@ -191,7 +192,7 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
     @Test(dataProvider = "correctEmailAndWrongPasswordDataProvider")
     public void negativeCorrectLoginAndWrongPasswordLoginTest(String userEmail, String userPassword, String alertMessage, String alertMessagePassword){
         String testName = new Object(){}.getClass().getEnclosingMethod().getName();
-        pathToScreenShot += testName + ".jpg";
+        pathToScreenShot += testName;
         LOG.info("Test scenario: "+testName);
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
         linkedinLoginSubmitPage = linkedinLoginPage.login(userEmail, userPassword);
@@ -222,7 +223,7 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
     @Test(dataProvider = "invalidPasswordRangeDataProvider")
     public void negativeInvalidPasswordRangeLoginTest(String userEmail, String userPassword, String alertMessagePassword){
         String testName = new Object(){}.getClass().getEnclosingMethod().getName();
-        pathToScreenShot += testName + ".jpg";
+        pathToScreenShot += testName;
         LOG.info("Test scenario: "+testName);
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
         linkedinLoginPage = linkedinLoginPage.login(userEmail, userPassword);
@@ -251,7 +252,7 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
     @Test (dataProvider = "wrongEmailAndCorrectPasswordDataProvider")
     public void negativeIncorrectLoginAndCorrectPasswordLoginTest(String userEmail, String userPassword, String alertMessage, String alertMessageEmail){
         String testName = new Object(){}.getClass().getEnclosingMethod().getName();
-        pathToScreenShot += testName + ".jpg";
+        pathToScreenShot += testName;
         LOG.info("Test scenario: "+testName);
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
         linkedinLoginSubmitPage = linkedinLoginPage.login(userEmail, userPassword);
@@ -282,7 +283,7 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
     @Test (dataProvider = "invalidEmailRangeDataProvider")
     public void negativeInvalidLoginRangeTest(String userEmail, String userPassword, String alertMessage){
         String testName = new Object(){}.getClass().getEnclosingMethod().getName();
-        pathToScreenShot += testName + ".jpg";
+        pathToScreenShot += testName;
         LOG.info("Test scenario: "+testName);
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
         linkedinLoginPage = linkedinLoginPage.login(userEmail, userPassword);
@@ -309,7 +310,7 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
     @Test(dataProvider = "emptyLoginAndOrPasswordDataProvider")
     public void negativeEmptyLoginAndOrPasswordLoginTest(String userEmail, String userPassword, String alertMessage){
         String testName = new Object(){}.getClass().getEnclosingMethod().getName();
-        pathToScreenShot += testName + ".jpg";
+        pathToScreenShot += testName;
         LOG.info("Test scenario: "+testName);
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
         linkedinLoginPage.login(userEmail, userPassword);
@@ -339,7 +340,7 @@ public class LinkedinLoginTest extends LinkedinBaseTest{
     @Test(dataProvider = "injectionInsteadLogin")
     public void negativeJS_HTML_SQLInjectionsInsteadLoginLoginTest(String userEmail, String userPassword, String headerContent, String alertMessageEmail){
         String testName = new Object(){}.getClass().getEnclosingMethod().getName();
-        pathToScreenShot += testName + ".jpg";
+        pathToScreenShot += testName;
         LOG.info("Test scenario: "+testName);
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "Login page is not loaded");
         linkedinLoginSubmitPage = linkedinLoginPage.login(userEmail, userPassword);

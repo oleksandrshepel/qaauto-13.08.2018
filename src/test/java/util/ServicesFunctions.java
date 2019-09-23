@@ -22,10 +22,6 @@ public class ServicesFunctions {
     private static final String GUI_WAIT_PANEL_ID = "uiStateWaitBlockPanelId";
     private static Logger LOG = Logger.getLogger(ServicesFunctions.class);
 
-    public static void scrollToElement(WebDriver driver, WebElement element) {
-        ((JavascriptExecutor) driver).executeScript("arguments[0].scrollIntoView();", element);
-        waitForJQueryAndPrimeFaces(driver);
-    }
 
     /**
      * Метод который влючает ожидание выполнения JQUERY/PRIMEFACES/JAVASCRIPT
@@ -93,6 +89,7 @@ public class ServicesFunctions {
     /**
      * Taking screenshot into .//target// + pathToScreenShot
      * @param driver
+     * @param pathToScreenShot
      */
     public static void screenShot(WebDriver driver, String pathToScreenShot){ //Метод который делает скрин
         File scrFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE); //снимает скрин
@@ -115,14 +112,14 @@ public class ServicesFunctions {
         return Parameters.screenUrlPrefix + fileName;
     }
 
-    public static void handleTimeoutException(WebDriver driver, String message, TimeoutException e) {
+    private static void handleTimeoutException(WebDriver driver, String message, TimeoutException e) {
         String screenshotUrl = takeScreenshot(driver);
         System.out.println(e);
         throw new WaitingTimeoutValidationException(e,
                 message + "&lt;a href=" + screenshotUrl + " &gt;screen&lt;/a&gt; ", screenshotUrl);
     }
 
-    public static void ThreadSleep(long milliSec) {
+    public static void threadSleep(long milliSec) {
         try {
             Thread.sleep(milliSec);
         } catch (InterruptedException e) {

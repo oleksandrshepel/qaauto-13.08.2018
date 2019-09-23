@@ -1,11 +1,16 @@
 package test;
 
+import org.apache.log4j.Logger;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Ignore;
 import org.testng.annotations.Test;
 
 public class LinkedinResetPasswordTest extends LinkedinBaseTest{
+
+    public LinkedinResetPasswordTest(){
+        LOG = Logger.getLogger(LinkedinResetPasswordTest.class);
+    }
 
     @DataProvider
     public Object[][] changePassword() {
@@ -52,6 +57,9 @@ public class LinkedinResetPasswordTest extends LinkedinBaseTest{
     @Test(dataProvider = "changePassword")
     public void resetPasswordTest(String userEmail, String password, String newPassword,
                                   String alertMessage, String alertMessagePassword){
+        String testName = new Object(){}.getClass().getEnclosingMethod().getName();
+        pathToScreenShot += testName;
+        LOG.info("Test scenario: "+testName);
         Assert.assertTrue(linkedinLoginPage.isPageLoaded(), "The Login page is not loaded");
         linkedinPasswordResetPage = linkedinLoginPage.clickForgotPasswordLink();
         Assert.assertTrue(linkedinPasswordResetPage.isPageLoaded(),"Password Reset Page is not loaded");
@@ -76,6 +84,7 @@ public class LinkedinResetPasswordTest extends LinkedinBaseTest{
         Assert.assertEquals(linkedinLoginSubmitPage.getUserPasswordAlertText(),alertMessagePassword, "Alert message Password is wrong or is not displayed");
         linkedinHomePage = linkedinLoginPage.login(userEmail, newPassword);
         Assert.assertTrue(linkedinHomePage.isPageLoaded(), "Home page is not loaded");
-
+        LOG.info("Test scenario is completed");
+        setIsTestPass(true);
     }
 }

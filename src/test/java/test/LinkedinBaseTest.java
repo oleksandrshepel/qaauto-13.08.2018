@@ -1,6 +1,7 @@
 package test;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import org.apache.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -22,6 +23,7 @@ import  java.lang.*;
  */
 public class LinkedinBaseTest {
     protected WebDriver driver;
+    protected static Logger LOG;
     protected boolean isTestPass = false;
     protected String pathToScreenShot;
     protected LinkedinLoginPage linkedinLoginPage;
@@ -40,8 +42,8 @@ public class LinkedinBaseTest {
      */
     @Parameters({"browserName","mainURL"})
     @BeforeMethod
-    public void beforeMethod (@Optional("firefox") String browserName,
-                              @Optional("https://www.linkedin.com/") String mainURL) throws Exception {
+    public void setUp (@Optional("firefox") String browserName,
+                      @Optional("https://www.linkedin.com/") String mainURL) throws Exception {
         //Аннотация @Optional("chrome") используется для того, чтобы указать дефолтное значение параметров.
         //Это даст возможность запускать тесты из Intellij, а анотация @Parameters позволит сделать запуск из xml файла (пр.кл.мыши по xml файлу -> run)
 
@@ -75,9 +77,7 @@ public class LinkedinBaseTest {
         //Этот метод создает путь к папкам которые мы создали папку с именем , пекедж с именем, имя файла и его разширение
         pathToScreenShot = file.getAbsolutePath() + "\\target\\screenshot\\"
                 + this.getClass().getPackage().getName() + "\\"
-                + this.getClass().getSimpleName() + "\\";// + new Object(){}.getClass().getEnclosingMethod().getName() + ".jpg";
-
-
+                + this.getClass().getSimpleName() + "\\";
         driver.manage().window().maximize();
         driver.get(mainURL);
         linkedinLoginPage = new LinkedinLoginPage(driver);
@@ -88,11 +88,11 @@ public class LinkedinBaseTest {
      * alwaysRun = true - should be added otherwise if an exception is thrown in BeforeMethod then AfterMethod will not work
      */
     @AfterMethod(alwaysRun = true)//добавили параметр (alwaysRun = true) иначе при выбросе exception в BeforeMethod наш AfterMethod не отработает
-    public void afterMethod(){
+    public void tearDown(){
         if (!(driver == null)) { //Если дравера нету то ничего закрывать
             if (!isTestPass) {
                 //Только в случаи false если тест упадет при закрытии драйвера снимать скринШот
-                ServicesFunctions.screenShot(driver, pathToScreenShot);
+                ServicesFunctions.screenShot(driver, pathToScreenShot+".jpg");
             }
             driver.quit();
         }
