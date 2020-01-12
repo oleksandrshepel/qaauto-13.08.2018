@@ -51,7 +51,7 @@ public class LinkedinBaseTest {
         // https://github.com/bonigarcia/webdrivermanager
         switch(browserName.toLowerCase()){
             case "chrome":
-                WebDriverManager.chromedriver().version("77.0.3865.40").setup();
+                WebDriverManager.chromedriver().setup();
                 driver = new ChromeDriver();
                 break;
             case "firefox":
